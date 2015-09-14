@@ -1,0 +1,49 @@
+<component name="libraryTable">
+  <library name="Generated files" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/app/parser.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/ometajs/lib/ometajs/grammars/bsjs.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/regr-2.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/rep-rule.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/regr-1.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/bs-ometa-compiler.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/local.js" />
+        <item url="file://$PROJECT_DIR$/app/parser.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/xjst.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/lr.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/node_modules/ometa-js/src/bs-ometa-js-compiler.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometa-js/src/bs-ometa-optimizer.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometa-js/src/bs-ometa-compiler.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometa-js/src/bs-js-compiler.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometa-js/test/files/simple.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometa-js/src/bs-ometa-js-compiler.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometa-js/src/bs-ometa-optimizer.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometa-js/src/bs-ometa-compiler.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometa-js/src/bs-js-compiler.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometa-js/test/files/simple.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/lib/ometajs/grammars/bsjs.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/regr-2.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/rep-rule.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/regr-1.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/bs-ometa-compiler.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/local.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/xjst.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/lr.js" />
+      <root url="file://$PROJECT_DIR$/app/parser.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/lib/ometajs/grammars/bsjs.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/regr-2.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/rep-rule.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/regr-1.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/bs-ometa-compiler.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/local.js" />
+      <root url="file://$PROJECT_DIR$/app/parser.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/xjst.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/lr.js" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

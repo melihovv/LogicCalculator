@@ -1,0 +1,25 @@
+{
+  "name": "LogicCalculator",
+  "version": "0.0.1",
+  "description": "Simple logical calculator",
+  "main": "changeLater",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/melihovv/LogicCalculator.git"
+  },
+  "keywords": [
+    "logical",
+    "calculator",
+    "ometa-js"
+  ],
+  "author": "Alexander Melihov <amelihovv@ya.ru>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/melihovv/LogicCalculator/issues"
+  },
+  "homepage": "https://github.com/melihovv/LogicCalculator",
+  "dependencies": {}
+}
