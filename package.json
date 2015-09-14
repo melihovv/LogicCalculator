@@ -21,5 +21,9 @@
     "url": "https://github.com/melihovv/LogicCalculator/issues"
   },
   "homepage": "https://github.com/melihovv/LogicCalculator",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "^2.3.2",
+    "must": "^0.12.0"
+  }
 }
