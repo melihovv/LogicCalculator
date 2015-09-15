@@ -2,11 +2,11 @@
   "name": "LogicCalculator",
   "version": "0.0.1",
   "description": "Simple logical calculator",
-  "main": "changeLater",
+  "main": "public/index.html",
   "scripts": {
     "test": "test",
-    "build": "browserify index.js -o public/javascripts/bundle.js",
-    "watch": "watchify index.js -o public/javascripts/bundle.js"
+    "build": "browserify public/javascripts/index.js -o public/javascripts/bundle.js",
+    "watch": "watchify public/javascripts/index.js -o public/javascripts/bundle.js"
   },
   "repository": {
     "type": "git",

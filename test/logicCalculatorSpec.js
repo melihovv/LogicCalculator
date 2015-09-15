@@ -5,12 +5,17 @@ describe('Logic calculator', function () {
     var calc = require('../lib/logicCalculator');
 
     var exec = function (str, context) {
-        return calc(parser.parse(str), context);
+        return calc(parser.parse(str).root, context);
     };
 
     it('must substitute variable with its value', function () {
         exec('A', {vars: {'A': true}}).must.be.truthy();
         exec('A', {vars: {'A': false}}).must.be.falsy();
+    });
+
+    it('must understand 0 and 1', function () {
+        exec('0').must.be.falsy();
+        exec('1').must.be.truthy();
     });
 
     it('must understand negative operator', function () {
@@ -110,7 +115,7 @@ describe('Logic calculator', function () {
                 'B': true,
                 'C': true
             }
-        }).must.be.truthy();
+        }).must.be.true();
         exec('A->B->C', {
             vars: {
                 'A': false,
