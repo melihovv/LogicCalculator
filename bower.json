@@ -1,0 +1,30 @@
+{
+  "name": "LogicCalculator",
+  "main": "public/index.html",
+  "version": "0.0.1",
+  "homepage": "https://github.com/melihovv/LogicCalculator",
+  "authors": [
+    "Alexander Melihov <amelihovv@ya.ru>"
+  ],
+  "description": "Simple logic calculator",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "logical",
+    "calculator",
+    "pegjs"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "jquery": "~2.1.4"
+  }
+}

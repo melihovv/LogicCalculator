@@ -1,2 +1,4 @@
 .idea/workspace.xml
 notes.txt
+node_modules/
+public/javascripts/vendor

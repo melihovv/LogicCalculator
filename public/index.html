@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Logical Calculator</title>
+    <link rel="stylesheet"
+          href="javascripts/vendor/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet"
+          href="javascripts/vendor/bootstrap/dist/css/bootstrap-theme.min.css"/>
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center">Logical Calculator</h1>
+
+    <form>
+        <div class="form-group">
+            <input type="text" class="form-control" autofocus
+                   placeholder="!!A|B&(C->D)" name="input"/>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="A" name="A">A
+                </label>
+                <label>
+                    <input type="checkbox" id="B" name="B">B
+                </label>
+                <label>
+                    <input type="checkbox" id="C" name="C">C
+                </label>
+                <label>
+                    <input type="checkbox" id="D" name="D">D
+                </label>
+            </div>
+        </div>
+    </form>
+
+    <p class="alert"></p>
+
+    <table class="table table-striped" style="display:none">
+        <thead>
+        <tr>
+            <td>A</td>
+            <td>B</td>
+            <td>C</td>
+            <td>D</td>
+            <td>Result</td>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<script src="javascripts/vendor/jquery/dist/jquery.min.js"></script>
+<script src="javascripts/bundle.js"></script>
+</body>
+</html>

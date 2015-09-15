@@ -4,7 +4,9 @@
   "description": "Simple logical calculator",
   "main": "changeLater",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "build": "browserify index.js -o public/javascripts/bundle.js",
+    "watch": "watchify index.js -o public/javascripts/bundle.js"
   },
   "repository": {
     "type": "git",
@@ -13,7 +15,7 @@
   "keywords": [
     "logical",
     "calculator",
-    "ometa-js"
+    "peg.js"
   ],
   "author": "Alexander Melihov <amelihovv@ya.ru>",
   "license": "MIT",
@@ -21,7 +23,9 @@
     "url": "https://github.com/melihovv/LogicCalculator/issues"
   },
   "homepage": "https://github.com/melihovv/LogicCalculator",
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^3.10.1"
+  },
   "devDependencies": {
     "mocha": "^2.3.2",
     "must": "^0.12.0"
