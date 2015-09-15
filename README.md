@@ -6,4 +6,5 @@ Supported operations:
 - disjunction (|)
 - implication (->)
 - negation (!)
+- equivalence (<->)
 

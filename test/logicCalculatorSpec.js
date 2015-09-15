@@ -41,14 +41,45 @@ describe('Logic calculator', function () {
         exec('A->B', {vars: {'A': false, 'B': false}}).must.be.truthy();
     });
 
+    it('must understand equivalence operator', function () {
+        exec('A<->B', {vars: {'A': true, 'B': true}}).must.be.truthy();
+        exec('A<->B', {vars: {'A': true, 'B': false}}).must.be.falsy();
+        exec('A<->B', {vars: {'A': false, 'B': true}}).must.be.falsy();
+        exec('A<->B', {vars: {'A': false, 'B': false}}).must.be.truthy();
+    });
+
     it('must execute disjuction first and implication second', function () {
-        exec('A->B|C', {vars: {'A': true, 'B': true, 'C': false}}).must.be.truthy();
-        exec('A->B|C', {vars: {'A': true, 'B': false, 'C': false}}).must.be.falsy();
+        exec('A->B|C', {
+            vars: {
+                'A': true,
+                'B': true,
+                'C': false
+            }
+        }).must.be.truthy();
+        exec('A->B|C', {
+            vars: {
+                'A': true,
+                'B': false,
+                'C': false
+            }
+        }).must.be.falsy();
     });
 
     it('must execute conjunction first and disjunction second', function () {
-        exec('A|B&C', {vars: {'A': false, 'B': true, 'C': false}}).must.be.falsy();
-        exec('A|B&C', {vars: {'A': false, 'B': false, 'C': true}}).must.be.falsy();
+        exec('A|B&C', {
+            vars: {
+                'A': false,
+                'B': true,
+                'C': false
+            }
+        }).must.be.falsy();
+        exec('A|B&C', {
+            vars: {
+                'A': false,
+                'B': false,
+                'C': true
+            }
+        }).must.be.falsy();
     });
 
     it('must execute expression between parenthesis first', function () {
@@ -59,12 +90,62 @@ describe('Logic calculator', function () {
     it('must execute complex expressions', function () {
         exec('(!!A->B)&(A)', {vars: {'A': false, 'B': true}}).must.be.falsy();
         exec('(A->B)&(A|A)', {vars: {'A': false, 'B': true}}).must.be.falsy();
-        exec('A|B|C', {vars: {'A': false, 'B': true, 'C': true}}).must.be.truthy();
-        exec('A&B&C', {vars: {'A': false, 'B': true, 'C': true}}).must.be.falsy();
-        exec('A->B&C', {vars: {'A': false, 'B': true, 'C': true}}).must.be.truthy();
-        exec('A->B->C', {vars: {'A': false, 'B': true, 'C': true}}).must.be.truthy();
-        exec('A->B->C', {vars: {'A': true, 'B': false, 'C': true}}).must.be.truthy();
-        exec('A->B->!C', {vars: {'A': true, 'B': false, 'C': true}}).must.be.truthy();
-        exec('!(A->B)&((!C)|D)', {vars: {'A': true, 'B': false, 'C': true, 'D': false}}).must.be.falsy();
+        exec('A|B|C', {
+            vars: {
+                'A': false,
+                'B': true,
+                'C': true
+            }
+        }).must.be.truthy();
+        exec('A&B&C', {
+            vars: {
+                'A': false,
+                'B': true,
+                'C': true
+            }
+        }).must.be.falsy();
+        exec('A->B&C', {
+            vars: {
+                'A': false,
+                'B': true,
+                'C': true
+            }
+        }).must.be.truthy();
+        exec('A->B->C', {
+            vars: {
+                'A': false,
+                'B': true,
+                'C': true
+            }
+        }).must.be.truthy();
+        exec('A->B->C', {
+            vars: {
+                'A': true,
+                'B': false,
+                'C': true
+            }
+        }).must.be.truthy();
+        exec('A->B->!C', {
+            vars: {
+                'A': true,
+                'B': false,
+                'C': true
+            }
+        }).must.be.truthy();
+        exec('!(A->B)&((!C)|D)', {
+            vars: {
+                'A': true,
+                'B': false,
+                'C': true,
+                'D': false
+            }
+        }).must.be.falsy();
+        exec('A<->B<->C', {
+            vars: {
+                'A': true,
+                'B': false,
+                'C': true
+            }
+        }).must.be.falsy();
     });
 });
