@@ -20,18 +20,31 @@
     </form>
 
     <p class="alert"></p>
-
-    <table class="table table-striped" style="display:none">
-        <thead>
-        <tr>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
 </div>
 
 <script src="javascripts/vendor/jquery/dist/jquery.min.js"></script>
+<script src="javascripts/vendor/handlebars/handlebars.min.js"></script>
 <script src="javascripts/bundle.js"></script>
+
+<script id="truth-table" type="text/x-handlebars-template">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            {{#each titleCells}}
+            <td>{{this}}</td>
+            {{/each}}
+        </tr>
+        </thead>
+        <tbody>
+            {{#each rows}}
+            <tr>
+                {{#each this}}
+                    <td>{{this}}</td>
+                {{/each}}
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</script>
 </body>
 </html>

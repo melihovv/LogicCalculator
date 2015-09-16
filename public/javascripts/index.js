@@ -8,8 +8,12 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    var input = $('input[type=text]');
+    var source = $('#truth-table').html();
+    var template = Handlebars.compile(source);
 
+    var container = $('.container');
+
+    var input = $('input[type=text]');
     input.on('input', _.debounce(handler, 800));
 
     function handler() {
@@ -18,7 +22,6 @@ $(document).ready(function () {
         var table = $('table');
 
         if (text.length === 0) {
-            table.hide();
             return;
         }
 
@@ -28,18 +31,13 @@ $(document).ready(function () {
             var varsName = parseResult.varsName;
 
             if (varsName.size > 0) {
-                var tbody = $(table).find('tbody');
-                tbody.html('');
-                var thead = $(table).find('thead');
-
-                var title = '<tr>';
+                var titleCells = [];
                 varsName.forEach(function (val) {
-                    title += '<td>' + val + '</td>';
+                    titleCells.push(val);
                 });
-                title += '<td>Result</td>';
-                title += '</tr>';
-                thead.html(title);
+                titleCells.push('Result');
 
+                var rows = [];
                 var maxIter = Math.pow(2, varsName.size);
                 for (var i = 0; i < maxIter; ++i) {
                     var binString = Number(i).toString(2);
@@ -49,11 +47,9 @@ $(document).ready(function () {
                         binString = new Array(diff + 1).join('0') + binString;
                     }
 
-                    var row = '<tr>';
                     var numbers = [];
                     var binStringLength = binString.length;
                     for (var j = 0; j < binStringLength; ++j) {
-                        row += '<td>' + binString[j] + '</td>';
                         numbers.push(Number(binString[j]));
                     }
 
@@ -63,13 +59,20 @@ $(document).ready(function () {
                         vars[val] = numbers[counter++];
                     });
 
-                    row += '<td>' + Number(calc(ast, {vars: vars})) + '</td>';
-                    row += '</tr>';
-
-                    tbody.append(row);
+                    numbers.push(Number(calc(ast, {vars: vars})));
+                    rows.push(numbers);
                 }
 
-                table.show();
+                var context = {titleCells: titleCells, rows: rows};
+                var html = template(context);
+
+                if (table.length === 0) {
+                    container.append(html);
+                } else {
+                    table.show();
+                    table.html(html);
+                }
+
                 alert
                     .html('')
                     .removeClass('alert-danger');
@@ -79,7 +82,10 @@ $(document).ready(function () {
                 .removeClass('alert-success')
                 .addClass('alert-danger')
                 .text(e.line + '.' + e.column + ': ' + e.message);
-            table.hide();
+
+            if (table.length !== 0) {
+                table.hide();
+            }
         }
     }
 });

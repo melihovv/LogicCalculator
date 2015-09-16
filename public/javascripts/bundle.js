@@ -993,53 +993,58 @@ module.exports = (function() {
     }
 
     function peg$parseVariable() {
-      var s0, s1, s2, s3;
+      var s0, s1, s2, s3, s4, s5;
 
       peg$silentFails++;
       s0 = peg$currPos;
       s1 = peg$currPos;
+      s2 = peg$currPos;
       if (peg$c28.test(input.charAt(peg$currPos))) {
-        s2 = input.charAt(peg$currPos);
+        s3 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
-        s2 = peg$FAILED;
+        s3 = peg$FAILED;
         if (peg$silentFails === 0) { peg$fail(peg$c29); }
+      }
+      if (s3 !== peg$FAILED) {
+        s4 = [];
+        if (peg$c30.test(input.charAt(peg$currPos))) {
+          s5 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s5 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c31); }
+        }
+        while (s5 !== peg$FAILED) {
+          s4.push(s5);
+          if (peg$c30.test(input.charAt(peg$currPos))) {
+            s5 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s5 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c31); }
+          }
+        }
+        if (s4 !== peg$FAILED) {
+          s3 = [s3, s4];
+          s2 = s3;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$c1;
+        }
+      } else {
+        peg$currPos = s2;
+        s2 = peg$c1;
       }
       if (s2 !== peg$FAILED) {
         s2 = input.substring(s1, peg$currPos);
       }
       s1 = s2;
       if (s1 !== peg$FAILED) {
-        s2 = [];
-        if (peg$c30.test(input.charAt(peg$currPos))) {
-          s3 = input.charAt(peg$currPos);
-          peg$currPos++;
-        } else {
-          s3 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c31); }
-        }
-        while (s3 !== peg$FAILED) {
-          s2.push(s3);
-          if (peg$c30.test(input.charAt(peg$currPos))) {
-            s3 = input.charAt(peg$currPos);
-            peg$currPos++;
-          } else {
-            s3 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c31); }
-          }
-        }
-        if (s2 !== peg$FAILED) {
-          peg$reportedPos = s0;
-          s1 = peg$c32(s1);
-          s0 = s1;
-        } else {
-          peg$currPos = s0;
-          s0 = peg$c1;
-        }
-      } else {
-        peg$currPos = s0;
-        s0 = peg$c1;
+        peg$reportedPos = s0;
+        s1 = peg$c32(s1);
       }
+      s0 = s1;
       peg$silentFails--;
       if (s0 === peg$FAILED) {
         s1 = peg$FAILED;
@@ -13507,8 +13512,12 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    var input = $('input[type=text]');
+    var source = $('#truth-table').html();
+    var template = Handlebars.compile(source);
 
+    var container = $('.container');
+
+    var input = $('input[type=text]');
     input.on('input', _.debounce(handler, 800));
 
     function handler() {
@@ -13517,7 +13526,6 @@ $(document).ready(function () {
         var table = $('table');
 
         if (text.length === 0) {
-            table.hide();
             return;
         }
 
@@ -13527,18 +13535,13 @@ $(document).ready(function () {
             var varsName = parseResult.varsName;
 
             if (varsName.size > 0) {
-                var tbody = $(table).find('tbody');
-                tbody.html('');
-                var thead = $(table).find('thead');
-
-                var title = '<tr>';
+                var titleCells = [];
                 varsName.forEach(function (val) {
-                    title += '<td>' + val + '</td>';
+                    titleCells.push(val);
                 });
-                title += '<td>Result</td>';
-                title += '</tr>';
-                thead.html(title);
+                titleCells.push('Result');
 
+                var rows = [];
                 var maxIter = Math.pow(2, varsName.size);
                 for (var i = 0; i < maxIter; ++i) {
                     var binString = Number(i).toString(2);
@@ -13548,11 +13551,9 @@ $(document).ready(function () {
                         binString = new Array(diff + 1).join('0') + binString;
                     }
 
-                    var row = '<tr>';
                     var numbers = [];
                     var binStringLength = binString.length;
                     for (var j = 0; j < binStringLength; ++j) {
-                        row += '<td>' + binString[j] + '</td>';
                         numbers.push(Number(binString[j]));
                     }
 
@@ -13562,13 +13563,20 @@ $(document).ready(function () {
                         vars[val] = numbers[counter++];
                     });
 
-                    row += '<td>' + Number(calc(ast, {vars: vars})) + '</td>';
-                    row += '</tr>';
-
-                    tbody.append(row);
+                    numbers.push(Number(calc(ast, {vars: vars})));
+                    rows.push(numbers);
                 }
 
-                table.show();
+                var context = {titleCells: titleCells, rows: rows};
+                var html = template(context);
+
+                if (table.length === 0) {
+                    container.append(html);
+                } else {
+                    table.show();
+                    table.html(html);
+                }
+
                 alert
                     .html('')
                     .removeClass('alert-danger');
@@ -13578,7 +13586,10 @@ $(document).ready(function () {
                 .removeClass('alert-success')
                 .addClass('alert-danger')
                 .text(e.line + '.' + e.column + ': ' + e.message);
-            table.hide();
+
+            if (table.length !== 0) {
+                table.hide();
+            }
         }
     }
 });
