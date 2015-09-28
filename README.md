@@ -8,4 +8,4 @@ Supported operations:
 - negation (!)
 - equivalence (<->)
 
-Yo can try it on [here](http://melihovv.github.io/LogicCalculator/).
+Yo can try it [here](http://melihovv.github.io/LogicCalculator/).
