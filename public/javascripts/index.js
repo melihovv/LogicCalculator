@@ -18,15 +18,13 @@ $(document).ready(function () {
     var functionType = $('#functionType');
 
     var container = $('.container');
-
+    var alert = $('.alert');
+    var table = $('table');
     var input = $('input[type=text]');
     input.on('input', _.debounce(handler, 800));
 
     function handler() {
         var text = input.val();
-        var alert = $('.alert');
-        var table = $('table');
-
         if (text.length === 0) {
             return;
         }
@@ -39,7 +37,6 @@ $(document).ready(function () {
             var isAlwaysTrue = true;
             var isAlwaysFalse = false;
             var isExecutable = false;
-            var isRebuttable = false;
 
             if (varsName.size > 0) {
                 var titleCells = [];
@@ -98,18 +95,14 @@ $(document).ready(function () {
                     .html('')
                     .removeClass('alert-danger');
 
-                functionType.show();
                 if (isAlwaysTrue) {
                     functionType.html('тождественно-истинная, выполнимая');
                 } else if (!isAlwaysFalse) {
                     functionType.html('тождественно-ложная, опровержимая');
                 } else if (isExecutable) {
-                    functionType.html('выполнимая');
-
-                    if (isRebuttable) {
-                        functionType.html(functionType.html() + ', опровержимая');
-                    }
+                    functionType.html('выполнимая, опровержимая');
                 }
+                functionType.show();
             }
         } catch (e) {
             alert
