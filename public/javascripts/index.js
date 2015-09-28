@@ -11,6 +11,12 @@ $(document).ready(function () {
     var source = $('#truth-table').html();
     var template = Handlebars.compile(source);
 
+    // Тождественно истинная - всегда 1.
+    // Тождественно ложная - всегда 0.
+    // Выполнимая - может быть 1.
+    // Опровержимая - может быть 0.
+    var functionType = $('#functionType');
+
     var container = $('.container');
 
     var input = $('input[type=text]');
@@ -29,6 +35,11 @@ $(document).ready(function () {
             var parseResult = parser.parse(text);
             var ast = parseResult.root;
             var varsName = parseResult.varsName;
+
+            var isAlwaysTrue = true;
+            var isAlwaysFalse = false;
+            var isExecutable = false;
+            var isRebuttable = false;
 
             if (varsName.size > 0) {
                 var titleCells = [];
@@ -59,7 +70,17 @@ $(document).ready(function () {
                         vars[val] = numbers[counter++];
                     });
 
-                    numbers.push(Number(calc(ast, {vars: vars})));
+                    var result = Number(calc(ast, {vars: vars}));
+
+                    isAlwaysTrue = isAlwaysTrue && result;
+                    isAlwaysFalse = isAlwaysFalse || result;
+                    if (result == true) {
+                        isExecutable = true;
+                    } else {
+                        isRebuttable = true;
+                    }
+
+                    numbers.push(result);
                     rows.push(numbers);
                 }
 
@@ -76,6 +97,19 @@ $(document).ready(function () {
                 alert
                     .html('')
                     .removeClass('alert-danger');
+
+                functionType.show();
+                if (isAlwaysTrue) {
+                    functionType.html('тождественно-истинная, выполнимая');
+                } else if (!isAlwaysFalse) {
+                    functionType.html('тождественно-ложная, опровержимая');
+                } else if (isExecutable) {
+                    functionType.html('выполнимая');
+
+                    if (isRebuttable) {
+                        functionType.html(functionType.html() + ', опровержимая');
+                    }
+                }
             }
         } catch (e) {
             alert
@@ -86,6 +120,8 @@ $(document).ready(function () {
             if (table.length !== 0) {
                 table.hide();
             }
+
+            functionType.hide();
         }
     }
 });
