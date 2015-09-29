@@ -15,19 +15,23 @@ $(document).ready(function () {
 
     let pcnf = $('#pcnf');
     let pdnf = $('#pdnf');
+    let doubledFunction = $('#doubledFunction');
     let functionType = $('#functionType');
     let container = $('.container');
     let alert = $('.alert');
+    let table = [];
 
-    let input = $('input[type=text]');
-    input.on('input', _.debounce(handler, 800));
+    let input1 = $('#input1');
+    input1.on('input', _.debounce(handler, 800));
+
+    // TODO: 0 length string.
 
     function handler() {
-        let table = $('table');
-        let text = input.val();
+        let text = input1.val();
         if (text.length === 0) {
             return;
         }
+        let invertedText = text.replace(/([a-zA-Z][a-zA-Z0-9]*)/g, '!$1');
 
         try {
             // Parse input.
@@ -35,79 +39,89 @@ $(document).ready(function () {
             let ast = parseResult.root;
             let varsNames = parseResult.varsNames;
 
-            // User inputs at least one variable.
-            if (varsNames.size > 0) {
-                // Fill table header row.
-                let titleCells = [];
-                varsNames.forEach(function (val) {
-                    titleCells.push(val);
-                });
-                titleCells.push('Result');
+            // Fill table header row.
+            let titleCells = [];
+            varsNames.forEach(function (val) {
+                titleCells.push(val);
+            });
+            titleCells.push('Result');
 
-                // Build truth table.
-                let logicalCalculator = new LogicCalculator(ast, {varsNames: varsNames});
-                let truthTable = logicalCalculator.getTruthTable();
+            // Build truth table.
+            let truthTable = [];
+            let logicalCalculator = new LogicCalculator(ast, {varsNames: varsNames});
 
-                // Output truth table.
-                let context = {titleCells: titleCells, rows: truthTable};
-                let html = template(context);
-                if (table.length === 0) {
-                    container.append(html);
-                } else {
-                    table.html(html);
-                    table.show();
-                }
+            // User input at least one variable.
+            if (varsNames.size) {
+                truthTable = logicalCalculator.getTruthTable();
 
-                // Output function type.
-                functionType.html(LogicCalculator.getFunctionType(truthTable));
-                functionType.show();
-
-                pcnf.show();
-                pdnf.show();
+                functionType.html('Тип функции: ' + LogicCalculator.getFunctionType(truthTable) + '.');
                 pcnf.html('СКНФ: ' + logicalCalculator.getPcnf(truthTable));
                 pdnf.html('СДНФ: ' + logicalCalculator.getPdnf(truthTable));
-
-                // Hide alert.
-                alert
-                    .html('')
-                    .removeClass('alert-danger');
+                showPnf();
             } else {
                 let result = Number(LogicCalculator.calculate(parser.parse(text).root));
-                let context = {titleCells: ['Result'], rows: [[result]]};
-                let html = template(context);
-                if (table.length === 0) {
-                    container.append(html);
-                } else {
-                    table.html(html);
-                    table.show();
-                }
+                truthTable = [[result]];
 
                 if (result === 0) {
-                    functionType.html('тождестенно-ложная, опровержимая');
+                    functionType.html('Тип функции: тождественно-ложная, опровержимая.');
                 } else {
-                    functionType.html('тождественно-истинная, выполнимая');
+                    functionType.html('Тип функции: тождественно-истинная, выполнимая.');
                 }
 
-                pcnf.hide();
-                pdnf.hide();
-                alert
-                    .html('')
-                    .removeClass('alert-danger');
+                hidePnf();
             }
+
+            // Output truth table.
+            let context = {titleCells: titleCells, rows: truthTable};
+            let html = template(context);
+            fillTable(html);
+
+            show();
         } catch (e) {
-            // Show alert.
+            hide(e);
+        }
+
+        function fillTable(html) {
+            if (table.length === 0) {
+                container.append(html);
+                table = $('table');
+            } else {
+                table.html(html);
+            }
+        }
+
+        function show() {
+            alert
+                .html('')
+                .removeClass('alert-danger');
+
+            table.show();
+            functionType.show();
+        }
+
+        function showPnf() {
+            pcnf.show();
+            pdnf.show();
+        }
+
+        function hidePnf() {
+            pcnf.hide();
+            pdnf.hide();
+        }
+
+        function hide(e) {
             alert
                 .removeClass('alert-success')
                 .addClass('alert-danger')
                 .text(e.line + '.' + e.column + ': ' + e.message);
 
+            pcnf.hide();
+            pdnf.hide();
+            functionType.hide();
+
             if (table.length !== 0) {
                 table.hide();
             }
-
-            functionType.hide();
-            pcnf.hide();
-            pdnf.hide();
         }
     }
 });
