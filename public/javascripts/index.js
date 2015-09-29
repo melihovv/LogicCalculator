@@ -13,6 +13,8 @@ $(document).ready(function () {
     let source = $('#truth-table').html();
     let template = Handlebars.compile(source);
 
+    let pcnf = $('#pcnf');
+    let pdnf = $('#pdnf');
     let functionType = $('#functionType');
     let container = $('.container');
     let alert = $('.alert');
@@ -60,7 +62,34 @@ $(document).ready(function () {
                 functionType.html(LogicCalculator.getFunctionType(truthTable));
                 functionType.show();
 
+                pcnf.show();
+                pdnf.show();
+                pcnf.html('СКНФ: ' + logicalCalculator.getPcnf(truthTable));
+                pdnf.html('СДНФ: ' + logicalCalculator.getPdnf(truthTable));
+
                 // Hide alert.
+                alert
+                    .html('')
+                    .removeClass('alert-danger');
+            } else {
+                let result = Number(LogicCalculator.calculate(parser.parse(text).root));
+                let context = {titleCells: ['Result'], rows: [[result]]};
+                let html = template(context);
+                if (table.length === 0) {
+                    container.append(html);
+                } else {
+                    table.html(html);
+                    table.show();
+                }
+
+                if (result === 0) {
+                    functionType.html('тождестенно-ложная, опровержимая');
+                } else {
+                    functionType.html('тождественно-истинная, выполнимая');
+                }
+
+                pcnf.hide();
+                pdnf.hide();
                 alert
                     .html('')
                     .removeClass('alert-danger');
@@ -77,6 +106,8 @@ $(document).ready(function () {
             }
 
             functionType.hide();
+            pcnf.hide();
+            pdnf.hide();
         }
     }
 });

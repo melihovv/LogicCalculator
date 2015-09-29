@@ -19,6 +19,11 @@ describe('Logic calculator', function () {
             calculate('1').must.be.truthy();
         });
 
+        it('must calculate expression which consist from constants only', function () {
+            calculate('0|0').must.be.falsy();
+            calculate('0|1').must.be.truthy();
+        });
+
         it('must understand negative operator', function () {
             calculate('!A', {vars: {'A': true}}).must.be.falsy();
             calculate('!A', {vars: {'A': false}}).must.be.truthy();
@@ -243,6 +248,84 @@ describe('Logic calculator', function () {
 
         it('must properly recognize function which may return false or true', function () {
             getFunctionType('a|b').must.equal('выполнимая, опровержимая');
+        });
+    });
+
+    describe('getPcnf', function () {
+        var getPcnf = function (str) {
+            var parseResult = parser.parse(str);
+            var param = {
+                varsNames: parseResult.varsNames
+            };
+            var logicCalculator = new LogicCalculator(parseResult.root, param);
+            return logicCalculator.getPcnf(logicCalculator.getTruthTable());
+        };
+
+        it('must return a proper pcnf for simple logical expression containing only one variable', function () {
+            getPcnf('a').must.equal('(a)');
+        });
+
+        it('must return a proper pcnf for conjunction', function () {
+            getPcnf('a&b').must.equal('(a|b)&(a|!b)&(!a|b)');
+        });
+
+        it('must return a proper pcnf for disjuntion', function () {
+            getPcnf('a|b').must.equal('(a|b)');
+        });
+
+        it('must return a proper pcnf for implication', function () {
+            getPcnf('a->b').must.equal('(!a|b)');
+        });
+
+        it('must return a proper pcnf for equivalence', function () {
+            getPcnf('a<->b').must.equal('(a|!b)&(!a|b)');
+        });
+
+        it('must return a proper pcnf for complicated expression', function () {
+            getPcnf('(A&!C)|(A&B&C)|(A&C)').must.equal('(A|B|C)&(A|B|!C)&(A|!B|C)&(A|!B|!C)');
+        });
+
+        it('must return a proper pcnf for expression where might be constants', function () {
+            getPcnf('a->0').must.equal('(!a)');
+        });
+    });
+
+    describe('getPdnf', function () {
+        var getPdnf = function (str) {
+            var parseResult = parser.parse(str);
+            var param = {
+                varsNames: parseResult.varsNames
+            };
+            var logicCalculator = new LogicCalculator(parseResult.root, param);
+            return logicCalculator.getPdnf(logicCalculator.getTruthTable());
+        };
+
+        it('must return a proper pcnf for simple logical expression containing only one variable', function () {
+            getPdnf('a').must.equal('(a)');
+        });
+
+        it('must return a proper pcnf for conjunction', function () {
+            getPdnf('a&b').must.equal('(a&b)');
+        });
+
+        it('must return a proper pcnf for disjuntion', function () {
+            getPdnf('a|b').must.equal('(!a&b)|(a&!b)|(a&b)');
+        });
+
+        it('must return a proper pcnf for implication', function () {
+            getPdnf('a->b').must.equal('(!a&!b)|(!a&b)|(a&b)');
+        });
+
+        it('must return a proper pcnf for equivalence', function () {
+            getPdnf('a<->b').must.equal('(!a&!b)|(a&b)');
+        });
+
+        it('must return a proper pcnf for complicated expression', function () {
+            getPdnf('(A&!C)|(A&B&C)|(A&C)').must.equal('(A&!B&!C)|(A&!B&C)|(A&B&!C)|(A&B&C)');
+        });
+
+        it('must return a proper pcnf for expression where might be constants', function () {
+            getPdnf('a->0').must.equal('(!a)');
         });
     });
 });

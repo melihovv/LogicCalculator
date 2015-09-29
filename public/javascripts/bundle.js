@@ -125,6 +125,88 @@ class LogicCalculator {
             return 'выполнимая, опровержимая';
         }
     }
+
+    getPcnf(truthTable) {
+        let varsAmount = Math.log2(truthTable.length);
+        let result = '';
+
+        let varsNames = [];
+        for (let varName of this.varsNames) {
+            varsNames.push(varName);
+        }
+        varsNames.sort();
+
+        let rowsAmount = truthTable.length;
+        truthTable.forEach(function (row, index) {
+            if (row[varsAmount] === 0) {
+                result += '(';
+
+                let length = row.length;
+                for (let i = 0; i < length - 1; ++i) {
+                    if (row[i] == 0) {
+                        result += varsNames[i];
+                    } else {
+                        result += '!' + varsNames[i];
+                    }
+
+                    if (i !== length - 2) {
+                        result += '|';
+                    }
+                }
+
+                result += ')';
+
+                if (index !== rowsAmount - 1) {
+                    result += '&';
+                }
+            }
+        });
+
+        return result[result.length - 1] === '&' ?
+            result.substring(0, result.length - 1) :
+            result;
+    }
+
+    getPdnf(truthTable) {
+        let varsAmount = Math.log2(truthTable.length);
+        let result = '';
+
+        let varsNames = [];
+        for (let varName of this.varsNames) {
+            varsNames.push(varName);
+        }
+        varsNames.sort();
+
+        let rowsAmount = truthTable.length;
+        truthTable.forEach(function (row, index) {
+            if (row[varsAmount] === 1) {
+                result += '(';
+
+                let length = row.length;
+                for (let i = 0; i < length - 1; ++i) {
+                    if (row[i] == 1) {
+                        result += varsNames[i];
+                    } else {
+                        result += '!' + varsNames[i];
+                    }
+
+                    if (i !== length - 2) {
+                        result += '&';
+                    }
+                }
+
+                result += ')';
+
+                if (index !== rowsAmount - 1) {
+                    result += '|';
+                }
+            }
+        });
+
+        return result[result.length - 1] === '|' ?
+            result.substring(0, result.length - 1) :
+            result;
+    }
 }
 
 module.exports = LogicCalculator;
@@ -168,7 +250,8 @@ module.exports = (function() {
         peg$startRuleFunctions = { start: peg$parsestart },
         peg$startRuleFunction  = peg$parsestart,
 
-        peg$c0 = function(root) {return {
+        peg$c0 = function(root) {
+                return {
                     root: root,
                     varsNames: varsNames
                 };
@@ -13633,6 +13716,8 @@ $(document).ready(function () {
     let source = $('#truth-table').html();
     let template = Handlebars.compile(source);
 
+    let pcnf = $('#pcnf');
+    let pdnf = $('#pdnf');
     let functionType = $('#functionType');
     let container = $('.container');
     let alert = $('.alert');
@@ -13680,7 +13765,34 @@ $(document).ready(function () {
                 functionType.html(LogicCalculator.getFunctionType(truthTable));
                 functionType.show();
 
+                pcnf.show();
+                pdnf.show();
+                pcnf.html('СКНФ: ' + logicalCalculator.getPcnf(truthTable));
+                pdnf.html('СДНФ: ' + logicalCalculator.getPdnf(truthTable));
+
                 // Hide alert.
+                alert
+                    .html('')
+                    .removeClass('alert-danger');
+            } else {
+                let result = Number(LogicCalculator.calculate(parser.parse(text).root));
+                let context = {titleCells: ['Result'], rows: [[result]]};
+                let html = template(context);
+                if (table.length === 0) {
+                    container.append(html);
+                } else {
+                    table.html(html);
+                    table.show();
+                }
+
+                if (result === 0) {
+                    functionType.html('тождестенно-ложная, опровержимая');
+                } else {
+                    functionType.html('тождественно-истинная, выполнимая');
+                }
+
+                pcnf.hide();
+                pdnf.hide();
                 alert
                     .html('')
                     .removeClass('alert-danger');
@@ -13697,6 +13809,8 @@ $(document).ready(function () {
             }
 
             functionType.hide();
+            pcnf.hide();
+            pdnf.hide();
         }
     }
 });
