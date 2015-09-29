@@ -20,51 +20,72 @@ $(document).ready(function () {
     let container = $('.container');
     let alert = $('.alert');
     let selfDual = $('#selfDual');
+    let dual = $('#dual');
     let table = [];
 
     let input1 = $('#input1');
-    input1.on('input', _.debounce(handler, 800));
+    let input2 = $('#input2');
+    input1.on('keypress', handler);
+    input2.on('keypress', handler);
 
-    function handler() {
+    function handler(e) {
+        if (e.keyCode !== 13) {
+            return;
+        }
+
         let text = input1.val();
         if (text.length === 0) {
             hide();
             return;
         }
         let invertedText = text.replace(/([a-zA-Z][a-zA-Z0-9]*)/g, '!$1');
+        let text2 = input2.val();
 
         try {
             // Parse input.
             let parseResult = parser.parse(text);
-            let ast = parseResult.root;
-            let varsNames = parseResult.varsNames;
-
             let invertedParseResult = parser.parse(invertedText);
-            let ast2 = invertedParseResult.root;
-            let varsNames2 = invertedParseResult.varsNames;
+
+            let parseResult2 = {};
+            let logicalCalculator2 = {};
+            if (text2.length) {
+                parseResult2 = parser.parse(text2);
+                logicalCalculator2 = new LogicCalculator(parseResult2.root, {varsNames: parseResult2.varsNames});
+            }
 
             // Fill table header row.
             let titleCells = [];
-            varsNames.forEach(function (val) {
+            parseResult.varsNames.forEach(function (val) {
                 titleCells.push(val);
             });
             titleCells.push('Result');
 
             // Build truth table.
             let truthTable = [];
-            let logicalCalculator = new LogicCalculator(ast, {varsNames: varsNames});
-            let logicalCalculator2 = new LogicCalculator(ast2, {varsNames: varsNames2});
+            let logicalCalculator = new LogicCalculator(parseResult.root, {varsNames: parseResult.varsNames});
+            let invertedLogicalCalculator = new LogicCalculator(invertedParseResult.root, {varsNames: invertedParseResult.varsNames});
 
             // User input at least one variable.
-            if (varsNames.size) {
+            if (parseResult.varsNames.size) {
                 truthTable = logicalCalculator.getTruthTable();
-                let truthTable2 = logicalCalculator2.getTruthTable();
-                LogicCalculator.invertResults(truthTable2);
+                let invertedTruthTable = invertedLogicalCalculator.getTruthTable();
+                LogicCalculator.invertResults(invertedTruthTable);
+
+                if (parseResult2.varsNames && parseResult2.varsNames.size) {
+                    let truthTable2 = logicalCalculator2.getTruthTable();
+                    if (_.isEqual(invertedTruthTable, truthTable2)) {
+                        dual.html('The second function is dual function of the first one.');
+                    } else {
+                        dual.html('The second function isn\'t dual function of the first one.');
+                    }
+                } else {
+                    dual.hide();
+                }
 
                 functionType.html('Function type: ' + LogicCalculator.getFunctionType(truthTable) + '.');
                 pcnf.html('PCNF: ' + logicalCalculator.getPcnf(truthTable));
                 pdnf.html('PDNF: ' + logicalCalculator.getPdnf(truthTable));
-                selfDual.html(_.isEqual(truthTable, truthTable2) ? 'Self dual function.' : 'Not self dual function.');
+                selfDual.html(_.isEqual(truthTable, invertedTruthTable) ? 'Self dual function.' : 'Not self dual function.');
                 showFunctionWithVariablesParams();
             } else {
                 let result = Number(LogicCalculator.calculate(parser.parse(text).root));
@@ -112,12 +133,14 @@ $(document).ready(function () {
             pcnf.show();
             pdnf.show();
             selfDual.show();
+            dual.show();
         }
 
         function hideFunctionWithVariablesParams() {
             pcnf.hide();
             pdnf.hide();
             selfDual.hide();
+            dual.hide();
         }
 
         function showAlert(e) {
@@ -132,6 +155,7 @@ $(document).ready(function () {
             pdnf.hide();
             functionType.hide();
             selfDual.hide();
+            dual.hide();
 
             if (table.length !== 0) {
                 table.hide();
