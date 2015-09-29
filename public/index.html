@@ -12,15 +12,20 @@
 
     <form>
         <div class="form-group">
-            <input id="input1" type="text" class="form-control" autofocus
-                   placeholder="!!A|B&(C->D)<->A" name="input" style="margin-bottom: 20px;"/>
+            <input id="input1" type="text" class="form-control" autofocus placeholder="!!A|B&(C->D)<->A" name="input"
+                   style="margin-bottom: 20px;"/>
         </div>
     </form>
 
     <p class="alert"></p>
+
     <p id="functionType"></p>
+
     <p id="pcnf"></p>
+
     <p id="pdnf"></p>
+
+    <p id="selfDual"></p>
 </div>
 
 <script src="javascripts/vendor/jquery/dist/jquery.min.js"></script>
@@ -37,13 +42,13 @@
         </tr>
         </thead>
         <tbody>
-            {{#each rows}}
-            <tr>
-                {{#each this}}
-                    <td>{{this}}</td>
-                {{/each}}
-            </tr>
+        {{#each rows}}
+        <tr>
+            {{#each this}}
+            <td>{{this}}</td>
             {{/each}}
+        </tr>
+        {{/each}}
         </tbody>
     </table>
 </script>

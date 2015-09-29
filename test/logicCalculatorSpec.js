@@ -328,4 +328,21 @@ describe('Logic calculator', function () {
             getPdnf('a->0').must.equal('(!a)');
         });
     });
+
+    describe('invertResults', function () {
+        var invertResults = function (truthTable) {
+            LogicCalculator.invertResults(truthTable);
+            return truthTable;
+        };
+
+        it('must invert results', function () {
+            invertResults([
+                [1, 1],
+                [0, 0]
+            ]).must.eql([
+                    [1, 0],
+                    [0, 1]
+                ]);
+        });
+    });
 });

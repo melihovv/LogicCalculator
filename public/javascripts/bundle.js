@@ -207,6 +207,15 @@ class LogicCalculator {
             result.substring(0, result.length - 1) :
             result;
     }
+
+    static invertResults(truthTable) {
+        let varsAmount = Math.log2(truthTable.length);
+
+        let length = truthTable.length;
+        for (let i = 0; i < length; ++i) {
+            truthTable[i][varsAmount] === 1 ? truthTable[i][varsAmount] = 0 : truthTable[i][varsAmount] = 1;
+        }
+    }
 }
 
 module.exports = LogicCalculator;
@@ -13722,6 +13731,7 @@ $(document).ready(function () {
     let functionType = $('#functionType');
     let container = $('.container');
     let alert = $('.alert');
+    let selfDual = $('#selfDual');
     let table = [];
 
     let input1 = $('#input1');
@@ -13741,6 +13751,10 @@ $(document).ready(function () {
             let ast = parseResult.root;
             let varsNames = parseResult.varsNames;
 
+            let invertedParseResult = parser.parse(invertedText);
+            let ast2 = invertedParseResult.root;
+            let varsNames2 = invertedParseResult.varsNames;
+
             // Fill table header row.
             let titleCells = [];
             varsNames.forEach(function (val) {
@@ -13751,15 +13765,19 @@ $(document).ready(function () {
             // Build truth table.
             let truthTable = [];
             let logicalCalculator = new LogicCalculator(ast, {varsNames: varsNames});
+            let logicalCalculator2 = new LogicCalculator(ast2, {varsNames: varsNames2});
 
             // User input at least one variable.
             if (varsNames.size) {
                 truthTable = logicalCalculator.getTruthTable();
+                let truthTable2 = logicalCalculator2.getTruthTable();
+                LogicCalculator.invertResults(truthTable2);
 
                 functionType.html('Тип функции: ' + LogicCalculator.getFunctionType(truthTable) + '.');
                 pcnf.html('СКНФ: ' + logicalCalculator.getPcnf(truthTable));
                 pdnf.html('СДНФ: ' + logicalCalculator.getPdnf(truthTable));
-                showPnf();
+                selfDual.html(_.isEqual(truthTable, truthTable2) ? 'Функция самодвойственная.' : 'Функция не самодвойственная.');
+                showFunctionWithVariablesParams();
             } else {
                 let result = Number(LogicCalculator.calculate(parser.parse(text).root));
                 truthTable = [[result]];
@@ -13770,7 +13788,7 @@ $(document).ready(function () {
                     functionType.html('Тип функции: тождественно-истинная, выполнимая.');
                 }
 
-                hidePnf();
+                hideFunctionWithVariablesParams();
             }
 
             // Output truth table.
@@ -13802,14 +13820,16 @@ $(document).ready(function () {
             functionType.show();
         }
 
-        function showPnf() {
+        function showFunctionWithVariablesParams() {
             pcnf.show();
             pdnf.show();
+            selfDual.show();
         }
 
-        function hidePnf() {
+        function hideFunctionWithVariablesParams() {
             pcnf.hide();
             pdnf.hide();
+            selfDual.hide();
         }
 
         function showAlert(e) {
@@ -13823,6 +13843,7 @@ $(document).ready(function () {
             pcnf.hide();
             pdnf.hide();
             functionType.hide();
+            selfDual.hide();
 
             if (table.length !== 0) {
                 table.hide();
