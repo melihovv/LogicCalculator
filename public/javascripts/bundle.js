@@ -118,11 +118,11 @@ class LogicCalculator {
         });
 
         if (isAlwaysTrue) {
-            return 'тождественно-истинная, выполнимая';
+            return 'identically-true, doable';
         } else if (!isntAlwaysFalse) {
-            return 'тождественно-ложная, опровержимая';
+            return 'identically-false, rebuttable';
         } else {
-            return 'выполнимая, опровержимая';
+            return 'doable, rebuttable';
         }
     }
 
@@ -13773,19 +13773,19 @@ $(document).ready(function () {
                 let truthTable2 = logicalCalculator2.getTruthTable();
                 LogicCalculator.invertResults(truthTable2);
 
-                functionType.html('Тип функции: ' + LogicCalculator.getFunctionType(truthTable) + '.');
-                pcnf.html('СКНФ: ' + logicalCalculator.getPcnf(truthTable));
-                pdnf.html('СДНФ: ' + logicalCalculator.getPdnf(truthTable));
-                selfDual.html(_.isEqual(truthTable, truthTable2) ? 'Функция самодвойственная.' : 'Функция не самодвойственная.');
+                functionType.html('Function type: ' + LogicCalculator.getFunctionType(truthTable) + '.');
+                pcnf.html('PCNF: ' + logicalCalculator.getPcnf(truthTable));
+                pdnf.html('PDNF: ' + logicalCalculator.getPdnf(truthTable));
+                selfDual.html(_.isEqual(truthTable, truthTable2) ? 'Self dual function.' : 'Not self dual function.');
                 showFunctionWithVariablesParams();
             } else {
                 let result = Number(LogicCalculator.calculate(parser.parse(text).root));
                 truthTable = [[result]];
 
                 if (result === 0) {
-                    functionType.html('Тип функции: тождественно-ложная, опровержимая.');
+                    functionType.html('Function type: identically-false, rebuttable.');
                 } else {
-                    functionType.html('Тип функции: тождественно-истинная, выполнимая.');
+                    functionType.html('Function type: identically-true, doable.');
                 }
 
                 hideFunctionWithVariablesParams();

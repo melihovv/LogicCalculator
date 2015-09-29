@@ -239,15 +239,15 @@ describe('Logic calculator', function () {
         };
 
         it('must properly recognize function which always returns true', function () {
-            getFunctionType('a<->a').must.equal('тождественно-истинная, выполнимая');
+            getFunctionType('a<->a').must.equal('identically-true, doable');
         });
 
         it('must properly recognize function which always returns false', function () {
-            getFunctionType('a<->!a').must.equal('тождественно-ложная, опровержимая');
+            getFunctionType('a<->!a').must.equal('identically-false, rebuttable');
         });
 
         it('must properly recognize function which may return false or true', function () {
-            getFunctionType('a|b').must.equal('выполнимая, опровержимая');
+            getFunctionType('a|b').must.equal('doable, rebuttable');
         });
     });
 
