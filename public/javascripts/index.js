@@ -24,11 +24,10 @@ $(document).ready(function () {
     let input1 = $('#input1');
     input1.on('input', _.debounce(handler, 800));
 
-    // TODO: 0 length string.
-
     function handler() {
         let text = input1.val();
         if (text.length === 0) {
+            hide();
             return;
         }
         let invertedText = text.replace(/([a-zA-Z][a-zA-Z0-9]*)/g, '!$1');
@@ -78,7 +77,8 @@ $(document).ready(function () {
 
             show();
         } catch (e) {
-            hide(e);
+            hide();
+            showAlert(e);
         }
 
         function fillTable(html) {
@@ -109,12 +109,14 @@ $(document).ready(function () {
             pdnf.hide();
         }
 
-        function hide(e) {
+        function showAlert(e) {
             alert
                 .removeClass('alert-success')
                 .addClass('alert-danger')
                 .text(e.line + '.' + e.column + ': ' + e.message);
+        }
 
+        function hide() {
             pcnf.hide();
             pdnf.hide();
             functionType.hide();
