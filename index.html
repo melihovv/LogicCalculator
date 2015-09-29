@@ -3,10 +3,8 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Logical Calculator</title>
-    <link rel="stylesheet"
-          href="javascripts/vendor/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet"
-          href="javascripts/vendor/bootstrap/dist/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="javascripts/vendor/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="javascripts/vendor/bootstrap/dist/css/bootstrap-theme.min.css"/>
 </head>
 <body>
 <div class="container">
@@ -14,12 +12,23 @@
 
     <form>
         <div class="form-group">
-            <input type="text" class="form-control" autofocus
-                   placeholder="!!A|B&(C->D)<->A" name="input"/>
+            <input id="input1" type="text" class="form-control" autofocus placeholder="!!A|B&(C->D)<->A" name="input1"
+                   style="margin-bottom: 20px;"/>
+            <input id="input2" type="text" class="form-control" autofocus placeholder="Second function for dual check" name="input2"/>
         </div>
     </form>
 
     <p class="alert"></p>
+
+    <p id="functionType"></p>
+
+    <p id="pcnf"></p>
+
+    <p id="pdnf"></p>
+
+    <p id="selfDual"></p>
+
+    <p id="dual"></p>
 </div>
 
 <script src="javascripts/vendor/jquery/dist/jquery.min.js"></script>
@@ -36,13 +45,13 @@
         </tr>
         </thead>
         <tbody>
-            {{#each rows}}
-            <tr>
-                {{#each this}}
-                    <td>{{this}}</td>
-                {{/each}}
-            </tr>
+        {{#each rows}}
+        <tr>
+            {{#each this}}
+            <td>{{this}}</td>
             {{/each}}
+        </tr>
+        {{/each}}
         </tbody>
     </table>
 </script>
