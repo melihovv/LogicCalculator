@@ -122,7 +122,7 @@
 	                    if (_.isEqual(invertedTruthTable, truthTable2)) {
 	                        dual.html('The second function is dual function of the first one.');
 	                    } else {
-	                        dual.html('The ssecond function isn\'t dual function of the first one.');
+	                        dual.html('The second function isn\'t dual function of the first one.');
 	                    }
 	                } else {
 	                    dual.hide();
