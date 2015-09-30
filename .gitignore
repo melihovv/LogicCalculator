@@ -1,4 +1,5 @@
 .idea/workspace.xml
 notes.txt
 node_modules/
-public/vendor
+public/vendor/
+.publish/

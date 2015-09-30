@@ -29,7 +29,7 @@ gulp.task('watch', function () {
 });
 
 gulp.task('deploy', function () {
-    return gulp.src("./public/**/*")
+    return gulp.src('./public/**/*')
         .pipe(deploy())
 });
 
