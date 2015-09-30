@@ -3,8 +3,9 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Logical Calculator</title>
-    <link rel="stylesheet" href="javascripts/vendor/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="javascripts/vendor/bootstrap/dist/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="css/index.css"/>
 </head>
 <body>
 <div class="container">
@@ -12,9 +13,8 @@
 
     <form>
         <div class="form-group">
-            <input id="input1" type="text" class="form-control" autofocus placeholder="!!A|B&(C->D)<->A" name="input1"
-                   style="margin-bottom: 20px;"/>
-            <input id="input2" type="text" class="form-control" autofocus placeholder="Second function for dual check" name="input2"/>
+            <input id="input1" type="text" class="form-control" autofocus placeholder="!!A|B&&(C->D)<->A" name="input1"/>
+            <input id="input2" type="text" class="form-control" placeholder="Second function for dual check" name="input2"/>
         </div>
     </form>
 
@@ -31,9 +31,9 @@
     <p id="dual"></p>
 </div>
 
-<script src="javascripts/vendor/jquery/dist/jquery.min.js"></script>
-<script src="javascripts/vendor/handlebars/handlebars.min.js"></script>
-<script src="javascripts/bundle.js"></script>
+<script src="vendor/jquery/dist/jquery.min.js"></script>
+<script src="vendor/handlebars/handlebars.min.js"></script>
+<script src="js/bundle.js"></script>
 
 <script id="truth-table" type="text/x-handlebars-template">
     <table class="table table-striped">
