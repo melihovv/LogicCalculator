@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Logical Calculator</title>
+    <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="css/index.css"/>
+</head>
+<body>
+<div class="container">
+    <h1 class="text-center">Logical Calculator</h1>
+
+    <form>
+        <div class="form-group">
+            <input id="input1" type="text" class="form-control" autofocus placeholder="!!A|B&&(C->D)<->A" name="input1"/>
+            <input id="input2" type="text" class="form-control" placeholder="Second function for dual check" name="input2"/>
+        </div>
+    </form>
+
+    <p class="alert"></p>
+
+    <p id="functionType"></p>
+
+    <p id="pcnf"></p>
+
+    <p id="pdnf"></p>
+
+    <p id="selfDual"></p>
+
+    <p id="dual"></p>
+</div>
+
+<script src="vendor/jquery/dist/jquery.min.js"></script>
+<script src="vendor/handlebars/handlebars.min.js"></script>
+<script src="js/bundle.js"></script>
+
+<script id="truth-table" type="text/x-handlebars-template">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            {{#each titleCells}}
+            <td>{{this}}</td>
+            {{/each}}
+        </tr>
+        </thead>
+        <tbody>
+        {{#each rows}}
+        <tr>
+            {{#each this}}
+            <td>{{this}}</td>
+            {{/each}}
+        </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</script>
+</body>
+</html>
