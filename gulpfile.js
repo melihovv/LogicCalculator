@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var util = require('gulp-util');
 var browserSync = require('browser-sync');
 var webpack = require("webpack");
+var deploy = require('gulp-gh-pages');
 
 var webpackConfig = require("./webpack.config.js");
 
@@ -25,6 +26,11 @@ gulp.task('webpack', function (callback) {
 gulp.task('watch', function () {
     gulp.watch('./public/js/index.js', ['webpack']);
     gulp.watch(['index.html', 'js/bundle.js'], {cwd: 'public'}, browserSync.reload);
+});
+
+gulp.task('deploy', function () {
+    return gulp.src("./public/**/*")
+        .pipe(deploy())
 });
 
 var execWebpack = function (config) {
