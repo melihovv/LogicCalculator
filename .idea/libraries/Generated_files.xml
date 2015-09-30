@@ -3,6 +3,7 @@
     <properties>
       <sourceFilesUrls>
         <item url="file://$PROJECT_DIR$/lib/parser.js" />
+        <item url="file://$PROJECT_DIR$/lib/parser.js" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
@@ -32,6 +33,7 @@
       <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/local.js" />
       <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/xjst.js" />
       <root url="file://$PROJECT_DIR$/node_modules/ometajs/test/files/lr.js" />
+      <root url="file://$PROJECT_DIR$/lib/parser.js" />
       <root url="file://$PROJECT_DIR$/lib/parser.js" />
     </CLASSES>
     <SOURCES />
