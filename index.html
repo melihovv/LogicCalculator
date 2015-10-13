@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Logical Calculator</title>
     <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="vendor/bootstrap/dist/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet"
+          href="vendor/bootstrap/dist/css/bootstrap-theme.min.css"/>
     <link rel="stylesheet" href="css/index.css"/>
 </head>
 <body>
@@ -13,39 +14,64 @@
 
     <form>
         <div class="form-group">
-            <input id="input1" type="text" class="form-control" autofocus placeholder="!!A|B&(C->D)<->A" name="input1"/>
-            <input id="input2" type="text" class="form-control" placeholder="Second function for dual check" name="input2"/>
+            <input type="text" class="form-control" autofocus
+                   placeholder="!!A|B&(C->D)<->A" data-target="#mainTab"/>
+            <input type="text" class="form-control"
+                   placeholder="Second function for dual check" data-target="#secondTab"/>
         </div>
     </form>
 
     <p class="alert"></p>
 
-    <p id="functionType"></p>
+    <div class="tabs">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#mainTab" aria-controls="tab1" role="tab"
+                   data-toggle="tab">
+                    Main function
+                </a>
+            </li>
+            <li role="presentation">
+                <a href="#secondTab" aria-controls="tab2" role="tab"
+                   data-toggle="tab">
+                    Second function
+                </a>
+            </li>
+        </ul>
 
-    <p id="pcnf"></p>
-
-    <p id="pdnf"></p>
-
-    <p id="selfDual"></p>
-
-    <p id="dual"></p>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="mainTab"></div>
+            <div role="tabpanel" class="tab-pane" id="secondTab"></div>
+        </div>
+    </div>
 </div>
 
 <script src="vendor/jquery/dist/jquery.min.js"></script>
+<script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="vendor/handlebars/handlebars.min.js"></script>
 <script src="js/bundle.js"></script>
 
 <script id="truth-table" type="text/x-handlebars-template">
+    <p>{{info.functionType}}</p>
+
+    <p>{{info.pcnf}}</p>
+
+    <p>{{info.pdnf}}</p>
+
+    <p>{{info.selfDual}}</p>
+
+    <p>{{info.dual}}</p>
+
     <table class="table table-striped">
         <thead>
         <tr>
-            {{#each titleCells}}
+            {{#each table.titleCells}}
             <td>{{this}}</td>
             {{/each}}
         </tr>
         </thead>
         <tbody>
-        {{#each rows}}
+        {{#each table.rows}}
         <tr>
             {{#each this}}
             <td>{{this}}</td>
