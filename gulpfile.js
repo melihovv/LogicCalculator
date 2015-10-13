@@ -24,8 +24,8 @@ gulp.task('webpack', function (callback) {
 });
 
 gulp.task('watch', function () {
-    gulp.watch('./public/js/index.js', ['webpack']);
-    gulp.watch(['index.html', 'js/bundle.js'], {cwd: 'public'}, browserSync.reload);
+    gulp.watch(['./public/js/index.js', './lib/*.js'], ['webpack']);
+    gulp.watch(['index.html', 'js/bundle.js', 'css/index.css'], {cwd: 'public'}, browserSync.reload);
 });
 
 gulp.task('deploy', function () {

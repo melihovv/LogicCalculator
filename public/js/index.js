@@ -10,48 +10,34 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
+    $('input').on('keypress', handler);
+
     let source = $('#truth-table').html();
     let template = Handlebars.compile(source);
 
-    let pcnf = $('#pcnf');
-    let pdnf = $('#pdnf');
-    let doubledFunction = $('#doubledFunction');
-    let functionType = $('#functionType');
-    let container = $('.container');
     let alert = $('.alert');
-    let selfDual = $('#selfDual');
-    let dual = $('#dual');
-    let table = [];
-
-    let input1 = $('#input1');
-    let input2 = $('#input2');
-    input1.on('keypress', handler);
-    input2.on('keypress', handler);
+    let tabs = $('.tabs');
 
     function handler(e) {
         if (e.keyCode !== 13) {
             return;
         }
 
-        let text = input1.val();
+        let _this = $(this);
+        let target = _this.attr('data-target');
+
+        let text = _this.val();
         if (text.length === 0) {
-            hide();
+            let $target = $(target);
+            $target.html('');
+            if ($target.siblings('div').html() === '') {
+                tabs.hide();
+            }
             return;
         }
-        let invertedText = text.replace(/([a-zA-Z][a-zA-Z0-9]*)/g, '!$1');
-        let text2 = input2.val();
 
         try {
-            // Parse input.
             let parseResult = parser.parse(text);
-            let invertedParseResult = parser.parse(invertedText);
-
-            let parseResult2 = {};
-            let logicalCalculator2 = {};
-            if (text2.length) {
-                parseResult2 = parser.parse(text2);
-                logicalCalculator2 = new LogicCalculator(parseResult2.root, {varsNames: parseResult2.varsNames});
-            }
 
             // Fill table header row.
             let titleCells = [];
@@ -62,104 +48,67 @@ $(document).ready(function () {
 
             // Build truth table.
             let truthTable = [];
-            let logicalCalculator = new LogicCalculator(parseResult.root, {varsNames: parseResult.varsNames});
-            let invertedLogicalCalculator = new LogicCalculator(invertedParseResult.root, {varsNames: invertedParseResult.varsNames});
+            let logicalCalculator = new LogicCalculator(parseResult.root, {
+                varsNames: parseResult.varsNames
+            });
 
             // User input at least one variable.
+            let info = {};
             if (parseResult.varsNames.size) {
                 truthTable = logicalCalculator.getTruthTable();
-                let invertedTruthTable = invertedLogicalCalculator.getTruthTable();
-                LogicCalculator.invertResults(invertedTruthTable);
 
-                if (parseResult2.varsNames && parseResult2.varsNames.size) {
-                    let truthTable2 = logicalCalculator2.getTruthTable();
-                    if (_.isEqual(invertedTruthTable, truthTable2)) {
-                        dual.html('The second function is dual function of the first one.');
-                    } else {
-                        dual.html('The second function isn\'t dual function of the first one.');
+                info.functionType = 'Function type: ' + LogicCalculator.getFunctionType(truthTable) + '.';
+                info.pcnf = 'PCNF: ' + logicalCalculator.getPcnf(truthTable);
+                info.pdnf = 'PDNF: ' + logicalCalculator.getPdnf(truthTable);
+                info.selfDual = LogicCalculator.isSelfDual(truthTable) ? 'Self dual function.' : 'Not self dual function.';
+
+                let secondInput = _this.siblings('input').val();
+                if (secondInput.length !== 0) {
+                    let secondParseResult = parser.parse(secondInput);
+                    let secondLogicCalculator = new LogicCalculator(secondParseResult.root, {
+                        varsNames: secondParseResult.varsNames
+                    });
+
+                    if (secondParseResult.varsNames && secondParseResult.varsNames.size) {
+                        let secondTruthTable = secondLogicCalculator.getTruthTable();
+                        info.dual = logicalCalculator.isDual(secondTruthTable) ?
+                            'The function ' + secondInput + ' is dual function of the this one.' :
+                            'The function ' + secondInput + ' isn\'t dual function of the this one.';
                     }
-                } else {
-                    dual.hide();
                 }
-
-                functionType.html('Function type: ' + LogicCalculator.getFunctionType(truthTable) + '.');
-                pcnf.html('PCNF: ' + logicalCalculator.getPcnf(truthTable));
-                pdnf.html('PDNF: ' + logicalCalculator.getPdnf(truthTable));
-                selfDual.html(_.isEqual(truthTable, invertedTruthTable) ? 'Self dual function.' : 'Not self dual function.');
-                showFunctionWithVariablesParams();
             } else {
-                let result = Number(LogicCalculator.calculate(parser.parse(text).root));
+                let result = Number(LogicCalculator.calculate(parseResult.root, {}));
                 truthTable = [[result]];
 
-                if (result === 0) {
-                    functionType.html('Function type: identically-false, rebuttable.');
-                } else {
-                    functionType.html('Function type: identically-true, doable.');
-                }
-
-                hideFunctionWithVariablesParams();
+                info.functionType = result === 0 ?
+                    'Function type: identically-false, rebuttable.' :
+                    'Function type: identically-true, doable.';
             }
 
             // Output truth table.
-            let context = {titleCells: titleCells, rows: truthTable};
+            let context = {
+                table: {
+                    titleCells: titleCells,
+                    rows: truthTable
+                },
+                info: info
+            };
             let html = template(context);
-            fillTable(html);
 
-            show();
-        } catch (e) {
-            hide();
-            showAlert(e);
+            let $target = $(target);
+            $target.html(html);
+            $target.addClass('active').siblings('div').removeClass('active');
+            $('a[href=' + target + ']').parent().addClass('active').siblings('li').removeClass('active');
+            tabs.show();
+
+            alert.text('').removeClass('alert-danger');
         }
-
-        function fillTable(html) {
-            if (table.length === 0) {
-                container.append(html);
-                table = $('table');
-            } else {
-                table.html(html);
-            }
-        }
-
-        function show() {
+        catch (e) {
             alert
-                .html('')
-                .removeClass('alert-danger');
-
-            table.show();
-            functionType.show();
-        }
-
-        function showFunctionWithVariablesParams() {
-            pcnf.show();
-            pdnf.show();
-            selfDual.show();
-            dual.show();
-        }
-
-        function hideFunctionWithVariablesParams() {
-            pcnf.hide();
-            pdnf.hide();
-            selfDual.hide();
-            dual.hide();
-        }
-
-        function showAlert(e) {
-            alert
-                .removeClass('alert-success')
                 .addClass('alert-danger')
                 .text(e.line + '.' + e.column + ': ' + e.message);
-        }
 
-        function hide() {
-            pcnf.hide();
-            pdnf.hide();
-            functionType.hide();
-            selfDual.hide();
-            dual.hide();
-
-            if (table.length !== 0) {
-                table.hide();
-            }
+            tabs.hide();
         }
     }
 });

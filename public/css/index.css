@@ -1,3 +1,11 @@
-#input1 {
-    margin-bottom: 20px;
+input {
+    margin: 20px 0 20px;
+}
+
+.tabs {
+    display: none;
+}
+
+.tab-pane {
+    padding-top: 20px;
 }
