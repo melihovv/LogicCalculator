@@ -13844,6 +13844,10 @@
 	            }
 	        });
 
+	        if (result === '') {
+	            return '1';
+	        }
+
 	        return result[result.length - 1] === '&' ?
 	            result.substring(0, result.length - 1) :
 	            result;
@@ -13889,6 +13893,10 @@
 	                }
 	            }
 	        });
+
+	        if (result === '') {
+	            return '0';
+	        }
 
 	        return result[result.length - 1] === '|' ?
 	            result.substring(0, result.length - 1) :
