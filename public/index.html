@@ -52,15 +52,44 @@
 <script src="js/bundle.js"></script>
 
 <script id="truth-table" type="text/x-handlebars-template">
-    <p>{{info.functionType}}</p>
+    <table class="table table-striped">
+        <tbody>
+        {{#if info.functionType}}
+        <tr>
+            <td>Funtion type</td>
+            <td>{{info.functionType}}</td>
+        </tr>
+        {{/if}}
 
-    <p>{{info.pcnf}}</p>
+        {{#if info.pcnf}}
+        <tr>
+            <td>PCNF</td>
+            <td>{{info.pcnf}}</td>
+        </tr>
+        {{/if}}
 
-    <p>{{info.pdnf}}</p>
+        {{#if info.pdnf}}
+        <tr>
+            <td>PDNF</td>
+            <td>{{info.pdnf}}</td>
+        </tr>
+        {{/if}}
 
-    <p>{{info.selfDual}}</p>
+        {{#if info.selfDual}}
+        <tr>
+            <td>Self dual func or not</td>
+            <td>{{info.selfDual}}</td>
+        </tr>
+        {{/if}}
 
-    <p>{{info.dual}}</p>
+        {{#if info.dual}}
+        <tr>
+            <td>Dual func or not</td>
+            <td>{{info.dual}}</td>
+        </tr>
+        {{/if}}
+        </tbody>
+    </table>
 
     <table class="table table-striped">
         <thead>

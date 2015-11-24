@@ -57,9 +57,9 @@ $(document).ready(function () {
             if (parseResult.varsNames.size) {
                 truthTable = logicalCalculator.getTruthTable();
 
-                info.functionType = 'Function type: ' + LogicCalculator.getFunctionType(truthTable) + '.';
-                info.pcnf = 'PCNF: ' + logicalCalculator.getPcnf(truthTable);
-                info.pdnf = 'PDNF: ' + logicalCalculator.getPdnf(truthTable);
+                info.functionType = LogicCalculator.getFunctionType(truthTable) + '.';
+                info.pcnf = logicalCalculator.getPcnf(truthTable);
+                info.pdnf = logicalCalculator.getPdnf(truthTable);
                 info.selfDual = LogicCalculator.isSelfDual(truthTable) ? 'Self dual function.' : 'Not self dual function.';
 
                 let secondInput = _this.siblings('input').val();
