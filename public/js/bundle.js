@@ -69,10 +69,10 @@
 	            return;
 	        }
 
-	        let _this = $(this);
-	        let target = _this.attr('data-target');
+	        let $this = $(this);
+	        let target = $this.attr('data-target');
 
-	        let text = _this.val();
+	        let text = $this.val();
 	        if (text.length === 0) {
 	            let $target = $(target);
 	            $target.html('');
@@ -103,27 +103,39 @@
 	            if (parseResult.varsNames.size) {
 	                truthTable = logicalCalculator.getTruthTable();
 
-	                info.functionType = LogicCalculator.getFunctionType(truthTable) + '.';
+	                info.functionType = LogicCalculator
+	                        .getFunctionType(truthTable) + '.';
 	                info.pcnf = logicalCalculator.getPcnf(truthTable);
 	                info.pdnf = logicalCalculator.getPdnf(truthTable);
-	                info.selfDual = LogicCalculator.isSelfDual(truthTable) ? 'Self dual function.' : 'Not self dual function.';
+	                info.mdnf = logicalCalculator.mdnf(info.pdnf);
+	                info.mcnf = logicalCalculator.mcnf(info.pcnf);
+	                info.selfDual = LogicCalculator.isSelfDual(truthTable) ?
+	                    'Self dual function.' :
+	                    'Not self dual function.';
 
-	                let secondInput = _this.siblings('input').val();
+	                let secondInput = $this.siblings('input').val();
 	                if (secondInput.length !== 0) {
 	                    let secondParseResult = parser.parse(secondInput);
-	                    let secondLogicCalculator = new LogicCalculator(secondParseResult.root, {
-	                        varsNames: secondParseResult.varsNames
-	                    });
 
-	                    if (secondParseResult.varsNames && secondParseResult.varsNames.size) {
-	                        let secondTruthTable = secondLogicCalculator.getTruthTable();
-	                        info.dual = logicalCalculator.isDual(secondTruthTable) ?
-	                            'The function ' + secondInput + ' is dual function of the this one.' :
-	                            'The function ' + secondInput + ' isn\'t dual function of the this one.';
+	                    let secondLogicCalculator = new LogicCalculator(
+	                        secondParseResult.root, {
+	                            varsNames: secondParseResult.varsNames
+	                        });
+
+	                    if (secondParseResult.varsNames &&
+	                        secondParseResult.varsNames.size) {
+	                        let secondTruthTable = secondLogicCalculator
+	                            .getTruthTable();
+	                        info.dual =  true ?
+	                        ' is dual function of the this one.' :
+	                        ' isn\'t dual function of the this one.';
 	                    }
 	                }
 	            } else {
-	                let result = Number(LogicCalculator.calculate(parseResult.root, {}));
+	                let result = Number(LogicCalculator.calculate(
+	                    parseResult.root,
+	                    {}
+	                ));
 	                truthTable = [[result]];
 
 	                info.functionType = result === 0 ?
@@ -144,7 +156,8 @@
 	            let $target = $(target);
 	            $target.html(html);
 	            $target.addClass('active').siblings('div').removeClass('active');
-	            $('a[href=' + target + ']').parent().addClass('active').siblings('li').removeClass('active');
+	            $('a[href=' + target + ']').parent().addClass('active')
+	                .siblings('li').removeClass('active');
 	            tabs.show();
 
 	            alert.text('').removeClass('alert-danger');
@@ -12586,7 +12599,11 @@
 	        peg$c2 = { type: "literal", value: "<->", description: "\"<->\"" },
 	        peg$c3 = function(first, rest) {
 	                if (rest.length > 0) {
-	                    return {type: 'equivalence', left: first, right: getExpression(rest)};
+	                    return {
+	                        type: 'equivalence',
+	                        left: first,
+	                        right: getExpression(rest)
+	                    };
 	                } else {
 	                    return first;
 	                }
@@ -12595,7 +12612,11 @@
 	        peg$c5 = { type: "literal", value: "->", description: "\"->\"" },
 	        peg$c6 = function(first, rest) {
 	                if (rest.length > 0) {
-	                    return {type: 'implication', left: first, right: getExpression(rest)};
+	                    return {
+	                        type: 'implication',
+	                        left: first,
+	                        right: getExpression(rest)
+	                    };
 	                } else {
 	                    return first;
 	                }
@@ -13678,6 +13699,11 @@
 
 	'use strict';
 
+	String.prototype.replaceAt = function (index, character) {
+	    return this.substr(0, index) + character +
+	        this.substr(index + character.length);
+	};
+
 	/**
 	 * Logic calculator class.
 	 */
@@ -13927,7 +13953,8 @@
 
 	        let middle = length / 2;
 	        for (let i = 0; i < length / 2; ++i) {
-	            if (truthTable[i][varsAmount] === truthTable[middle + i][varsAmount]) {
+	            if (truthTable[i][varsAmount] ===
+	                truthTable[middle + i][varsAmount]) {
 	                return false;
 	            }
 	        }
@@ -13948,11 +13975,275 @@
 	        let varsAmount = Math.log2(length);
 
 	        for (let i = 0; i < length; ++i) {
-	            if (this.rows[i][varsAmount] === truthTable[length - i - 1][varsAmount]) {
+	            if (this.rows[i][varsAmount] ===
+	                truthTable[length - i - 1][varsAmount]) {
 	                return false;
 	            }
 	        }
 
+	        return true;
+	    }
+
+	    /**
+	     * Get minimal disjunctive normal form.
+	     * @param pdnf Perfect disjunctive normal form.
+	     * @returns {string} Minimal disjunctive normal form.
+	     */
+	    mdnf(pdnf) {
+	        pdnf = pdnf
+	            .replace(/![a-zA-Z][a-zA-Z0-9]*/g, '0')
+	            .replace(/[a-zA-Z][a-zA-Z0-9]*/g, '1')
+	            .replace(/[\(\)&]/g, '')
+	            .split('|');
+
+	        let result = '';
+	        if (pdnf.length) {
+	            let result2 = LogicCalculator.quineMcCluskey(pdnf);
+	            let h = Array.from(this.varsNames);
+	            let opsize = h.length;
+
+	            for (let t of result2) {
+	                let tmp = '';
+	                for (let i = 0; i < opsize; ++i) {
+	                    if (t[i] === '1') {
+	                        tmp = h[i] + '&' + tmp;
+	                    } else if (t[i] === '0') {
+	                        tmp = '!' + h[i] + '&' + tmp;
+	                    }
+	                }
+
+	                tmp = tmp.slice(0, -1);
+	                result += '(' + tmp + ')|';
+	            }
+	        }
+	        return result.slice(0, -1);
+	    }
+
+	    mcnf(pcnf) {
+	        pcnf = pcnf
+	            .replace(/[a-zA-Z][a-zA-Z0-9]*/g, '1')
+	            .replace(/![a-zA-Z][a-zA-Z0-9]*/g, '0')
+	            .replace(/[\(\)|]/g, '')
+	            .split('&');
+
+	        let result = '';
+	        if (pcnf.length) {
+	            let result2 = LogicCalculator.quineMcCluskey(pcnf);
+	            let h = Array.from(this.varsNames);
+	            let opsize = h.length;
+
+	            for (let t of result2) {
+	                let tmp = '';
+	                for (let i = 0; i < opsize; ++i) {
+	                    if (t[i] === '1') {
+	                        tmp = h[i] + '|' + tmp;
+	                    } else if (t[i] === '0') {
+	                        tmp = '!' + h[i] + '|' + tmp;
+	                    }
+	                }
+
+	                tmp = tmp.slice(0, -1);
+	                result += '(' + tmp + ')|';
+	            }
+	        }
+	        return result.slice(0, -1);    }
+
+	    /**
+	     * Find minimal perfect form.
+	     * @param constituents Constituents of 1.
+	     * @returns {Array} Minimal perfect form.
+	     */
+	    static quineMcCluskey(constituents) {
+	        let groups = [];
+	        for (let constituent of constituents) {
+	            let index = (constituent.match(/1/g) || []).length;
+	            if (!groups[index]) {
+	                groups[index] = [];
+	            }
+	            groups[index].push(constituent + '+');
+	        }
+
+	        let primeImplicants = LogicCalculator.findPrimeImplicants(groups);
+	        let table = [];
+	        for (let i = 0; i < primeImplicants.length; ++i) {
+	            table.push([]);
+	            for (let j = 0; j < constituents.length; ++j) {
+	                table[i].push(
+	                    LogicCalculator.isCover(primeImplicants[i], constituents[j])
+	                );
+	            }
+	        }
+
+	        let result2 = LogicCalculator.petricMethod(table);
+	        let result = [];
+	        for (let i = 0; i < result2.length; ++i) {
+	            if (result2[i] === '1') {
+	                result.push(primeImplicants[i]);
+	            }
+	        }
+	        return result;
+	    }
+
+	    static petricMethod(table) {
+	        let I = [];
+	        for (let i = 0; i < table.length; ++i) {
+	            let tmp = new Array(table.length + 1).join('-');
+	            tmp = tmp.replaceAt(i, '1');
+	            I.push(tmp);
+	        }
+
+	        let product = [];
+	        for (let i = 0; i < table.length; ++i) {
+	            if (table[i][0]) {
+	                product.push(I[i]);
+	            }
+	        }
+
+	        for (let j = 1; j < table[0].length; ++j) {
+	            let tmp = [];
+	            let pp = product;
+	            for (let i = 0; i < table.length; ++i) {
+	                if (table[i][j]) {
+	                    tmp.push(I[i]);
+	                }
+	            }
+
+	            product = [];
+	            for (let p of pp) {
+	                for (let t of tmp) {
+	                    let n = new Array(table.length + 1).join('-');
+	                    for (let i = 0; i < t.length; ++i) {
+	                        if (p[i] === '1' || t[i] === '1') {
+	                            n = n.replaceAt(i, '1');
+	                        }
+	                    }
+
+	                    let isAddN = true;
+	                    let isDel = false;
+	                    product.forEach(function (item, index, array) {
+	                        let resf = LogicCalculator.findPosToMinimize(
+	                            item, n, n.length
+	                        );
+	                        if (resf !== -1 || item === n) {
+	                            isAddN = false;
+	                        }
+
+	                        if (resf !== -1 &&
+	                            (n.match(/1/g) || []).length <
+	                            (item.match(/1/g) || []).length) {
+	                            array.splice(index, 1);
+	                            isDel = true;
+	                        }
+	                    });
+
+	                    if (isAddN || isDel) {
+	                        product.push(n);
+	                    }
+	                }
+	            }
+	        }
+
+	        let imin = table.length + 1;
+	        let result = '';
+	        for (let p of product) {
+	            if ((p.match(/1/g) || []).length < imin) {
+	                result = p;
+	            }
+	        }
+	        return result;
+	    }
+
+	    /**
+	     * Find prime implicants.
+	     * @param groups Groups of constituents.
+	     * @returns {Array} Prime implicants.
+	     */
+	    static findPrimeImplicants(groups) {
+	        let n = groups[groups.length - 1][0].length - 1;
+	        let result = [];
+	        let isAllImplicantsFound = false;
+
+	        while (!isAllImplicantsFound) {
+	            isAllImplicantsFound = true;
+	            let tmp = [];
+
+	            // Try to minimize i and i + 1 groups.
+	            for (let i = 0; i < groups.length; ++i) {
+	                if (groups[i] === undefined) {
+	                    continue;
+	                }
+
+	                tmp.push([]);
+	                for (let gi = 0; gi < groups[i].length; ++gi) {
+	                    for (let gj = 0;
+	                         i + 1 < groups.length && gj < groups[i + 1].length;
+	                         ++gj) {
+
+	                        let pos = LogicCalculator.findPosToMinimize(
+	                            groups[i][gi],
+	                            groups[i + 1][gj],
+	                            n
+	                        );
+
+	                        if (pos !== -1) {
+	                            let newNotation = groups[i][gi];
+	                            newNotation = newNotation.replaceAt(pos, '*');
+	                            newNotation = newNotation.replaceAt(n, '+');
+
+	                            if (tmp[tmp.length - 1]
+	                                    .indexOf(newNotation) === -1) {
+	                                tmp[tmp.length - 1].push(newNotation);
+	                            }
+
+	                            isAllImplicantsFound = false;
+	                            groups[i][gi] = groups[i][gi].replaceAt(n, '-');
+	                            groups[i + 1][gj] = groups[i + 1][gj]
+	                                .replaceAt(n, '-');
+	                        }
+	                    }
+
+	                    if (groups[i][gi][n] === '+') {
+	                        result.push(groups[i][gi].slice(0, -1));
+	                    }
+	                }
+
+	                if (tmp[tmp.length - 1].length === 0) {
+	                    tmp.pop();
+	                }
+	            }
+
+	            groups = tmp;
+	        }
+
+	        for (let i = 0; i < groups.length; ++i) {
+	            for (let j = 0; j < groups[i].length; ++j) {
+	                result.push(groups[i][j].slice(0, -1));
+	            }
+	        }
+
+	        return result;
+	    }
+
+	    static findPosToMinimize(a, b, n) {
+	        let diff = 0;
+	        let result = -1;
+
+	        for (let i = 0; i < n; ++i) {
+	            if (a[i] != b[i]) {
+	                ++diff;
+	                result = i;
+	            }
+	        }
+
+	        return diff == 1 ? result : -1;
+	    }
+
+	    static isCover(prime, imp) {
+	        for (let i = 0; i < prime.length; ++i) {
+	            if (!isNaN(parseInt(prime[i])) && prime[i] != imp[i]) {
+	                return false;
+	            }
+	        }
 	        return true;
 	    }
 	}

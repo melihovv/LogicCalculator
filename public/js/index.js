@@ -23,10 +23,10 @@ $(document).ready(function () {
             return;
         }
 
-        let _this = $(this);
-        let target = _this.attr('data-target');
+        let $this = $(this);
+        let target = $this.attr('data-target');
 
-        let text = _this.val();
+        let text = $this.val();
         if (text.length === 0) {
             let $target = $(target);
             $target.html('');
@@ -57,27 +57,40 @@ $(document).ready(function () {
             if (parseResult.varsNames.size) {
                 truthTable = logicalCalculator.getTruthTable();
 
-                info.functionType = LogicCalculator.getFunctionType(truthTable) + '.';
+                info.functionType = LogicCalculator
+                        .getFunctionType(truthTable) + '.';
                 info.pcnf = logicalCalculator.getPcnf(truthTable);
                 info.pdnf = logicalCalculator.getPdnf(truthTable);
-                info.selfDual = LogicCalculator.isSelfDual(truthTable) ? 'Self dual function.' : 'Not self dual function.';
+                info.mdnf = logicalCalculator.mdnf(info.pdnf);
+                info.mcnf = logicalCalculator.mcnf(info.pcnf);
+                info.selfDual = LogicCalculator.isSelfDual(truthTable) ?
+                    'Self dual function.' :
+                    'Not self dual function.';
 
-                let secondInput = _this.siblings('input').val();
+                let secondInput = $this.siblings('input').val();
                 if (secondInput.length !== 0) {
                     let secondParseResult = parser.parse(secondInput);
-                    let secondLogicCalculator = new LogicCalculator(secondParseResult.root, {
-                        varsNames: secondParseResult.varsNames
-                    });
 
-                    if (secondParseResult.varsNames && secondParseResult.varsNames.size) {
-                        let secondTruthTable = secondLogicCalculator.getTruthTable();
-                        info.dual = logicalCalculator.isDual(secondTruthTable) ?
-                            'The function ' + secondInput + ' is dual function of the this one.' :
-                            'The function ' + secondInput + ' isn\'t dual function of the this one.';
+                    let secondLogicCalculator = new LogicCalculator(
+                        secondParseResult.root, {
+                            varsNames: secondParseResult.varsNames
+                        });
+
+                    if (secondParseResult.varsNames &&
+                        secondParseResult.varsNames.size) {
+                        let secondTruthTable = secondLogicCalculator
+                            .getTruthTable();
+                        info.dual = 'The function ' + secondInput +
+                        logicalCalculator.isDual(secondTruthTable) ?
+                        ' is dual function of the this one.' :
+                        ' isn\'t dual function of the this one.';
                     }
                 }
             } else {
-                let result = Number(LogicCalculator.calculate(parseResult.root, {}));
+                let result = Number(LogicCalculator.calculate(
+                    parseResult.root,
+                    {}
+                ));
                 truthTable = [[result]];
 
                 info.functionType = result === 0 ?
@@ -98,7 +111,8 @@ $(document).ready(function () {
             let $target = $(target);
             $target.html(html);
             $target.addClass('active').siblings('div').removeClass('active');
-            $('a[href=' + target + ']').parent().addClass('active').siblings('li').removeClass('active');
+            $('a[href=' + target + ']').parent().addClass('active')
+                .siblings('li').removeClass('active');
             tabs.show();
 
             alert.text('').removeClass('alert-danger');
