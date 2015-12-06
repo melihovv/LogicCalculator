@@ -1,128 +1,107 @@
 'use strict';
 
-let _ = require('lodash');
+import LogicCalculator from './../../lib/logicCalculator';
 
-let parser = require('./../../lib/parser');
-let LogicCalculator = require('./../../lib/logicCalculator');
+/**
+ * The {{#exists}} helper checks if a variable is defined.
+ */
+Handlebars.registerHelper('exists', function (variable, options) {
+    if (typeof variable !== 'undefined') {
+        return options.fn(this);
+    }
+});
 
-$(document).ready(function () {
-    $('form').on('submit', function (e) {
-        e.preventDefault();
-    });
+$(() => {
+    const $source = $('#truth-table').html();
+    const template = Handlebars.compile($source);
 
-    $('input').on('keypress', handler);
+    const $alert = $('.alert');
+    const $tabs = $('.tabs');
 
-    let source = $('#truth-table').html();
-    let template = Handlebars.compile(source);
+    const $form = $('form');
+    const $input1 = $form.find('input:nth-child(1)');
+    const $input2 = $form.find('input:nth-child(2)');
 
-    let alert = $('.alert');
-    let tabs = $('.tabs');
-
-    function handler(e) {
+    $form.on('keypress', (e) => {
+        // Continue if only enter is pressed.
         if (e.keyCode !== 13) {
             return;
         }
 
-        let $this = $(this);
-        let target = $this.attr('data-target');
-
-        let text = $this.val();
-        if (text.length === 0) {
-            let $target = $(target);
-            $target.html('');
-            if ($target.siblings('div').html() === '') {
-                tabs.hide();
-            }
+        if ($input1.val().length === 0 && $input2.val().length === 0) {
+            $tabs.hide();
             return;
         }
 
+        handler($input1);
+        handler($input2);
+    });
+
+    function handler($this) {
         try {
-            let parseResult = parser.parse(text);
-
-            // Fill table header row.
-            let titleCells = [];
-            parseResult.varsNames.forEach(function (val) {
-                titleCells.push(val);
-            });
-            titleCells.push('Result');
-
-            // Build truth table.
-            let truthTable = [];
-            let logicalCalculator = new LogicCalculator(parseResult.root, {
-                varsNames: parseResult.varsNames
-            });
-
-            // User input at least one variable.
-            let info = {};
-            if (parseResult.varsNames.size) {
-                truthTable = logicalCalculator.getTruthTable();
-
-                info.functionType = LogicCalculator
-                        .getFunctionType(truthTable) + '.';
-                info.pcnf = logicalCalculator.getPcnf(truthTable);
-                info.pdnf = logicalCalculator.getPdnf(truthTable);
-                info.mdnf = logicalCalculator.mdnf(info.pdnf);
-                info.mcnf = logicalCalculator.mcnf(info.pcnf);
-                info.selfDual = LogicCalculator.isSelfDual(truthTable) ?
-                    'Self dual function.' :
-                    'Not self dual function.';
-
-                let secondInput = $this.siblings('input').val();
-                if (secondInput.length !== 0) {
-                    let secondParseResult = parser.parse(secondInput);
-
-                    let secondLogicCalculator = new LogicCalculator(
-                        secondParseResult.root, {
-                            varsNames: secondParseResult.varsNames
-                        });
-
-                    if (secondParseResult.varsNames &&
-                        secondParseResult.varsNames.size) {
-                        let secondTruthTable = secondLogicCalculator
-                            .getTruthTable();
-                        info.dual = 'The function ' + secondInput +
-                        logicalCalculator.isDual(secondTruthTable) ?
-                        ' is dual function of the this one.' :
-                        ' isn\'t dual function of the this one.';
-                    }
-                }
-            } else {
-                let result = Number(LogicCalculator.calculate(
-                    parseResult.root,
-                    {}
-                ));
-                truthTable = [[result]];
-
-                info.functionType = result === 0 ?
-                    'Function type: identically-false, rebuttable.' :
-                    'Function type: identically-true, doable.';
+            const text = $this.val();
+            const $target = $($this.attr('data-target'));
+            if (text.length === 0) {
+                $target.html('');
+                return;
             }
 
-            // Output truth table.
-            let context = {
+            // Build truth table.
+            const calc = new LogicCalculator(text);
+
+            const info = {};
+            let truthTable = calc.truthTable();
+
+            if (calc.isIdenticallyTrue) {
+                info.functionType = 'identically-true, doable';
+            } else if (calc.isIdenticallyFalse) {
+                info.functionType = 'identically-false, rebuttable';
+            } else {
+                info.functionType = 'doable, rebuttable';
+            }
+
+            info.pcnf = calc.pcnf();
+            info.pdnf = calc.pdnf();
+            info.mdnf = calc.mdnf();
+            info.mcnf = calc.mcnf();
+
+            info.selfDual = calc.isSelfDual() ?
+                'Self dual function.' :
+                'Not self dual function.';
+
+            const text2 = $this.siblings('input').val();
+            if (text2.length !== 0) {
+                info.dual = calc.isDual(
+                    new LogicCalculator(text2).truthTable()
+                );
+            }
+
+            // Output truth table and function properties.
+            const context = {
                 table: {
-                    titleCells: titleCells,
+                    titleCells: calc.varsNames,
                     rows: truthTable
                 },
-                info: info
+                info
             };
-            let html = template(context);
+            const html = template(context);
 
-            let $target = $(target);
             $target.html(html);
-            $target.addClass('active').siblings('div').removeClass('active');
-            $('a[href=' + target + ']').parent().addClass('active')
-                .siblings('li').removeClass('active');
-            tabs.show();
+            $tabs.show();
 
-            alert.text('').removeClass('alert-danger');
-        }
-        catch (e) {
-            alert
+            $alert.text('').removeClass('alert-danger');
+        } catch (e) {
+            let text = e.message;
+            if (e.name === 'SyntaxError') {
+                text = `${e.location.start.line}.${e.location.start.column}: ` +
+                    `${e.message}`;
+            }
+
+            $alert
                 .addClass('alert-danger')
-                .text(e.line + '.' + e.column + ': ' + e.message);
+                .text(text);
 
-            tabs.hide();
+            $tabs.hide();
         }
     }
 });

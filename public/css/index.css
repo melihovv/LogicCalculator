@@ -2,6 +2,11 @@ input {
     margin: 20px 0 20px;
 }
 
+button[type=submit] {
+    display: block;
+    margin: 0 auto;
+}
+
 .tabs {
     display: none;
 }
