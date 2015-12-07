@@ -348,6 +348,10 @@
 	
 	            this._pdnf = this.pnf(1, '&', '|');
 	
+	            if (this.isIdenticallyFalse) {
+	                this._pdnf = '0';
+	            }
+	
 	            return this._pdnf;
 	        }
 	
@@ -510,6 +514,13 @@
 	            }
 	
 	            this._mdnf = result.slice(0, -1);
+	
+	            if (this.isIdenticallyTrue) {
+	                this._mdnf = '1';
+	            } else if (this.isIdenticallyFalse) {
+	                this._mdnf = '0';
+	            }
+	
 	            return this._mdnf;
 	        }
 	
@@ -525,7 +536,6 @@
 	                return this._mcnf;
 	            }
 	
-	            debugger;
 	            var tmp = this._pcnf.replace(/![a-zA-Z][a-zA-Z0-9]*/g, '0').replace(/[a-zA-Z][a-zA-Z0-9]*/g, '1').replace(/[\(\)|]/g, '').split('&');
 	
 	            var result = '';
@@ -571,6 +581,13 @@
 	            }
 	
 	            this._mcnf = result.slice(0, -1);
+	
+	            if (this.isIdenticallyTrue) {
+	                this._mcnf = '1';
+	            } else if (this.isIdenticallyFalse) {
+	                this._mcnf = '0';
+	            }
+	
 	            return this._mcnf;
 	        }
 	
@@ -602,20 +619,28 @@
 	                case 'or':
 	                    result = this.calc(ast.left, context);
 	                    ast.right.forEach(function (node) {
-	                        result |= _this3.calc(node, context);
+	                        result = result || _this3.calc(node, context);
 	                    });
 	                    break;
 	                case 'and':
 	                    result = this.calc(ast.left, context);
 	                    ast.right.forEach(function (node) {
-	                        result &= _this3.calc(node, context);
+	                        result = result && _this3.calc(node, context);
 	                    });
 	                    break;
 	                case 'implication':
-	                    result = this.calc(ast.left, context);
-	                    ast.right.forEach(function (node) {
-	                        result = !result || _this3.calc(node, context);
-	                    });
+	                    var left = this.calc(ast.left, context);
+	                    var copy = ast.right.slice();
+	                    copy.reverse();
+	                    var flag = false;
+	                    var right = copy.reduce(function (res, node) {
+	                        if (flag === false) {
+	                            flag = true;
+	                            return _this3.calc(node, context);
+	                        }
+	                        return !_this3.calc(node, context) || res;
+	                    }, false);
+	                    result = !left || right;
 	                    break;
 	                case 'equivalence':
 	                    var leftResult = this.calc(ast.left, context);
@@ -659,6 +684,12 @@
 	                    if (_didIteratorError3) {
 	                        throw _iteratorError3;
 	                    }
+	                }
+	            }
+	
+	            for (var i = 0; i < groups.length; ++i) {
+	                if (groups[i] === undefined) {
+	                    groups[i] = [];
 	                }
 	            }
 	
