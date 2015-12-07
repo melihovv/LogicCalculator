@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head lang="en">
     <meta charset="UTF-8">
     <title>Logical Calculator</title>
@@ -8,16 +9,20 @@
           href="vendor/bootstrap/dist/css/bootstrap-theme.min.css"/>
     <link rel="stylesheet" href="css/index.css"/>
 </head>
+
 <body>
 <div class="container">
     <h1 class="text-center">Logical Calculator</h1>
 
     <form>
         <div class="form-group">
-            <input type="text" class="form-control" autofocus
-                   placeholder="!!A|B&(C->D)<->A" data-target="#mainTab"/>
             <input type="text" class="form-control"
-                   placeholder="Second function for dual check" data-target="#secondTab"/>
+                   autofocus
+                   placeholder="!!A|B&(C->D)<->A"
+                   data-target="#mainTab"/>
+            <input type="text" class="form-control"
+                   placeholder="Second function for dual check"
+                   data-target="#secondTab"/>
         </div>
     </form>
 
@@ -49,18 +54,61 @@
 <script src="vendor/jquery/dist/jquery.min.js"></script>
 <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="vendor/handlebars/handlebars.min.js"></script>
-<script src="js/bundle.js"></script>
+<script src="js/app.bundle.js"></script>
 
 <script id="truth-table" type="text/x-handlebars-template">
-    <p>{{info.functionType}}</p>
+    <table class="table table-striped">
+        <tbody>
+        {{#exists info.functionType}}
+        <tr>
+            <td>Funtion type</td>
+            <td>{{info.functionType}}</td>
+        </tr>
+        {{/exists}}
 
-    <p>{{info.pcnf}}</p>
+        {{#exists info.pcnf}}
+        <tr>
+            <td>PCNF</td>
+            <td>{{info.pcnf}}</td>
+        </tr>
+        {{/exists}}
 
-    <p>{{info.pdnf}}</p>
+        {{#exists info.pdnf}}
+        <tr>
+            <td>PDNF</td>
+            <td>{{info.pdnf}}</td>
+        </tr>
+        {{/exists}}
 
-    <p>{{info.selfDual}}</p>
+        {{#exists info.mcnf}}
+        <tr>
+            <td>MCNF</td>
+            <td>{{info.mcnf}}</td>
+        </tr>
+        {{/exists}}
 
-    <p>{{info.dual}}</p>
+        {{#exists info.mdnf}}
+        <tr>
+            <td>MDNF</td>
+            <td>{{info.mdnf}}</td>
+        </tr>
+        {{/exists}}
+
+        {{#exists info.selfDual}}
+        <tr>
+            <td>Self dual func or not</td>
+            <td>{{info.selfDual}}</td>
+        </tr>
+        {{/exists}}
+
+        {{#exists info.dual}}
+        <tr>
+            <td>Dual func or not</td>
+            <td>{{info.dual}}</td>
+        </tr>
+        {{/exists}}
+        </tbody>
+    </table>
 
     <table class="table table-striped">
         <thead>
