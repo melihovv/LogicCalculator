@@ -1,9 +1,13 @@
 module.exports = {
-    entry: './public/js/index.js',
+    entry: {
+        app: './public/js/index',
+        test: './test/logicCalculatorSpec'
+    },
     output: {
         path: './public/js',
-        filename: 'bundle.js'
+        filename: '[name].bundle.js'
     },
+    devtool: 'source-map',
     module: {
         loaders: [
             {

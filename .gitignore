@@ -48,6 +48,6 @@ crashlytics-build.properties
 
 node_modules/
 public/vendor/
-public/js/bundle.js
+public/js/*bundle.js*
 /lib/parser.js
 .publish/

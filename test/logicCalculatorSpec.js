@@ -329,16 +329,31 @@ describe('Logic calculator', () => {
         });
     });
 
-    //describe('mdnf', () => {
-    //    const mdnf = function (pdnf, varsNames) {
-    //        return new LogicCalculator(undefined, {
-    //            _varsNames: varsNames
-    //        }).mdnf(pdnf);
-    //    };
-    //
-    //    it('must', () => {
-    //        mdnf('(!a&!b&!c&d)|(!a&!b&c&d)|(!a&b&!c&d)|(!a&b&c&d)|' +
-    //            '(a&b&c&!d)|(a&b&c&d)', new Set(['a', 'b', 'c', 'd']));
-    //    });
-    //});
+    describe('mcnf', () => {
+        const mcnf = (str) => {
+            const lc = new LogicCalculator(str);
+            lc.pcnf();
+            return lc.mcnf();
+        };
+
+        it('must properly evaluate mcnf', () => {
+            mcnf('a&b').must.equal('(a)&(b)');
+        });
+    });
+
+    describe('mdnf', () => {
+        const mdnf = (str) => {
+            const lc = new LogicCalculator(str);
+            lc.pdnf();
+            return lc.mdnf();
+        };
+
+        it('must properly evaluate mdnf', () => {
+            // (!a&!b&!c&d)|(!a&!b&c&d)|(!a&b&!c&d)|(!a&b&c&d)|(a&b&c&!d)|(a&b&c&d)
+            mdnf('(!a&!b&!c&d)|(!a&!b&c&d)|(!a&b&!c&d)|(!a&b&c&d)|' +
+                '(a&b&c&!d)|(a&b&c&d)').must.equal('(a&b&c)|(!a&d)');
+
+            mdnf('a&b').must.equal('(a&b)');
+        });
+    });
 });
