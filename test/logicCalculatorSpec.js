@@ -118,6 +118,12 @@ describe('Logic calculator', () => {
 
             calculate('A<->B<->C', {vars: {A: true, B: false, C: true}})
                 .must.be.falsy();
+
+            calculate('a->b->c', {vars: {a: true, b: true, c: false}})
+                .must.be.falsy();
+
+            calculate('a->b->c', {vars: {a: true, b: false, c: true}})
+                .must.be.truthy();
         });
     });
 
@@ -155,6 +161,19 @@ describe('Logic calculator', () => {
                 [0, 1, 1],
                 [1, 0, 0],
                 [1, 1, 1]
+            ]);
+        });
+
+        it('must return truth table for several implications', () => {
+            truthTable('a->b->c').must.eql([
+                [0, 0, 0, 1],
+                [0, 0, 1, 1],
+                [0, 1, 0, 1],
+                [0, 1, 1, 1],
+                [1, 0, 0, 1],
+                [1, 0, 1, 1],
+                [1, 1, 0, 0],
+                [1, 1, 1, 1]
             ]);
         });
 

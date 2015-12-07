@@ -45,6 +45,7 @@
         <item url="file://$PROJECT_DIR$/node_modules/webpack/node_modules/node-libs-browser/node_modules/crypto-browserify/node_modules/sha.js/test/prepare/vectors/byte0105.js" />
         <item url="file://$PROJECT_DIR$/node_modules/webpack/node_modules/node-libs-browser/node_modules/crypto-browserify/node_modules/sha.js/test/prepare/vectors/byte0098.js" />
         <item url="file://$PROJECT_DIR$/node_modules/webpack/node_modules/node-libs-browser/node_modules/crypto-browserify/node_modules/sha.js/test/prepare/vectors/byte0100.js" />
+        <item url="file://$PROJECT_DIR$/lib/parser.js" />
         <item url="file://$PROJECT_DIR$/node_modules/webpack/node_modules/node-libs-browser/node_modules/crypto-browserify/node_modules/sha.js/test/prepare/vectors/byte0099.js" />
         <item url="file://$PROJECT_DIR$/node_modules/webpack/node_modules/node-libs-browser/node_modules/crypto-browserify/node_modules/sha.js/test/prepare/vectors/byte0093.js" />
         <item url="file://$PROJECT_DIR$/node_modules/webpack/node_modules/node-libs-browser/node_modules/crypto-browserify/node_modules/sha.js/test/prepare/vectors/byte0094.js" />
@@ -219,6 +220,7 @@
       <root url="file://$PROJECT_DIR$/node_modules/webpack/node_modules/node-libs-browser/node_modules/crypto-browserify/node_modules/sha.js/test/prepare/vectors/byte0105.js" />
       <root url="file://$PROJECT_DIR$/node_modules/webpack/node_modules/node-libs-browser/node_modules/crypto-browserify/node_modules/sha.js/test/prepare/vectors/byte0098.js" />
       <root url="file://$PROJECT_DIR$/node_modules/webpack/node_modules/node-libs-browser/node_modules/crypto-browserify/node_modules/sha.js/test/prepare/vectors/byte0100.js" />
+      <root url="file://$PROJECT_DIR$/lib/parser.js" />
       <root url="file://$PROJECT_DIR$/node_modules/webpack/node_modules/node-libs-browser/node_modules/crypto-browserify/node_modules/sha.js/test/prepare/vectors/byte0099.js" />
       <root url="file://$PROJECT_DIR$/node_modules/webpack/node_modules/node-libs-browser/node_modules/crypto-browserify/node_modules/sha.js/test/prepare/vectors/byte0093.js" />
       <root url="file://$PROJECT_DIR$/node_modules/webpack/node_modules/node-libs-browser/node_modules/crypto-browserify/node_modules/sha.js/test/prepare/vectors/byte0094.js" />
